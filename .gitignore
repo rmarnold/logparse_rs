@@ -1,0 +1,29 @@
+# Rust
+/target/
+**/target/
+Cargo.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+/.venv/
+venv/
+.env
+
+# maturin / wheels
+/.maturin/
+dist/
+build/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# macOS
+.DS_Store
+
+# Misc
+*.log
