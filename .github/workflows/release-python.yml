@@ -33,7 +33,7 @@ jobs:
         with:
           command: build
           manylinux: auto
-          args: --release --interpreter python --out dist
+          args: --release -i ${{ matrix.python }} --out dist
           working-directory: bindings/python
 
       - name: Build source distribution (sdist)
