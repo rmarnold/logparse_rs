@@ -13,9 +13,9 @@ use core::{LoadedSchema, SCHEMA_CACHE};
 
 fn parse_line_to_dict<'py>(py: Python<'py>, line: &str, schema: &LoadedSchema) -> PyResult<Bound<'py, PyDict>> {
     let map = core::parse_line_to_map(line, schema).map_err(PyValueError::new_err)?;
-    let d = PyDict::new_bound(py);
+    let d = PyDict::new(py);
     for (k, v) in map.into_iter() {
-        let key = pyo3::types::PyString::intern_bound(py, &k);
+        let key = pyo3::types::PyString::intern(py, &k);
         match v {
             Some(s) => { d.set_item(key, s)?; }
             None => { d.set_item(key, py.None())?; }
@@ -53,7 +53,7 @@ fn parse_kv_with_schema(py: Python, line: &str, schema_path: &str) -> PyResult<P
 fn get_schema_status(py: Python) -> PyResult<Py<PyDict>> {
     use std::time::SystemTime;
     let guard = SCHEMA_CACHE.read().unwrap();
-    let d = PyDict::new_bound(py);
+    let d = PyDict::new(py);
     match guard.as_ref() {
         Some(ls) => {
             d.set_item("loaded", true)?;
@@ -93,7 +93,7 @@ fn parse_kv_enriched(py: Python, line: &str) -> PyResult<Py<PyDict>> {
     let t0 = Instant::now();
     let parsed = parse_line_to_dict(py, line, schema)?;
     let runtime_ns = t0.elapsed().as_nanos() as u128;
-    let d = PyDict::new_bound(py);
+    let d = PyDict::new(py);
     d.set_item("parsed", parsed)?;
     let max_len = std::cmp::min(256, line.len());
     d.set_item("raw_excerpt", &line[..max_len])?;
@@ -111,7 +111,7 @@ fn parse_kv_enriched_with_schema(py: Python, line: &str, schema_path: &str) -> P
     let t0 = Instant::now();
     let parsed = parse_line_to_dict(py, line, schema)?;
     let runtime_ns = t0.elapsed().as_nanos() as u128;
-    let d = PyDict::new_bound(py);
+    let d = PyDict::new(py);
     d.set_item("parsed", parsed)?;
     let max_len = std::cmp::min(256, line.len());
     d.set_item("raw_excerpt", &line[..max_len])?;
@@ -143,7 +143,7 @@ fn set_anonymizer_json(config_json: &str) -> PyResult<bool> {
 
 #[pyfunction]
 fn get_anonymizer_status(py: Python) -> PyResult<Py<PyDict>> {
-    let d = PyDict::new_bound(py);
+    let d = PyDict::new(py);
     let g = ANONYMIZER.read().unwrap();
     if let Some(a) = g.as_ref() {
         let total_pairs: usize = a.table.values().map(|m| m.len()).sum();
@@ -159,10 +159,10 @@ fn get_anonymizer_status(py: Python) -> PyResult<Py<PyDict>> {
 #[pyfunction]
 fn export_integrity_table(py: Python) -> PyResult<Py<PyDict>> {
     let g = ANONYMIZER.read().unwrap();
-    let d = PyDict::new_bound(py);
+    let d = PyDict::new(py);
     if let Some(a) = g.as_ref() {
         for (field, map) in &a.table {
-            let sub = PyDict::new_bound(py);
+            let sub = PyDict::new(py);
             for (orig, repl) in map { sub.set_item(orig, repl)?; }
             d.set_item(field, sub)?;
         }
@@ -181,7 +181,7 @@ fn parse_kv_enriched_anon(py: Python, line: &str) -> PyResult<Py<PyDict>> {
     let parsed = {
         let mut anon_guard = ANONYMIZER.write().unwrap();
         if let Some(a) = anon_guard.as_mut() {
-            let out = PyDict::new_bound(py);
+            let out = PyDict::new(py);
             for (k, v) in parsed0.iter() {
                 let key: String = k.extract()?;
                 if let Some(value_str) = v.extract::<Option<String>>().ok().flatten() {
@@ -197,7 +197,7 @@ fn parse_kv_enriched_anon(py: Python, line: &str) -> PyResult<Py<PyDict>> {
     };
     let anonymize_ns = t_anon.elapsed().as_nanos() as u128;
     let total_ns = parse_ns + anonymize_ns;
-    let out = PyDict::new_bound(py);
+    let out = PyDict::new(py);
     out.set_item("parsed", parsed)?;
     let max_len = std::cmp::min(256, line.len());
     out.set_item("raw_excerpt", &line[..max_len])?;
@@ -216,7 +216,19 @@ fn parse_kv_enriched_with_schema_anon(py: Python, line: &str, schema_path: &str)
 }
 
 #[pymodule]
+#[pyo3(module = "logparse_rs")]
 fn logparse_rs(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
+    m.add("__doc__", "High-performance log parsing and anonymization library.\n\n\
+        Features:\n\
+        - Schema-driven CSV/KV parsing\n\
+        - Optional field anonymization with deterministic tokens\n\
+        - Fast Rust core with Python bindings\n\n\
+        Quick start:\n\
+        >>> import logparse_rs as lp\n\
+        >>> lp.load_schema('path/to/schema.json')\n\
+        >>> result = lp.parse_kv_enriched('1,2025/10/12 05:07:29,...')\n\
+        >>> print(result['parsed'])")?;
+
     // Schema-driven parsing APIs
     m.add_function(wrap_pyfunction!(load_schema, m)?)?;
     m.add_function(wrap_pyfunction!(parse_kv, m)?)?;
@@ -238,7 +250,7 @@ fn logparse_rs(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(parse_kv_enriched_anon, m)?)?;
     m.add_function(wrap_pyfunction!(parse_kv_enriched_with_schema_anon, m)?)?;
 
-    // Optional: preload schema from env var for faster startup in hot paths.
+    // Optional: preload schema from env var for a faster startup in hot paths.
     if let Ok(path) = std::env::var("LOGPARSE_PRELOAD_SCHEMA")
         .or_else(|_| std::env::var("SCHEMA_JSON_PATH"))
         .or_else(|_| std::env::var("PAN_RUST_PRELOAD_SCHEMA"))
