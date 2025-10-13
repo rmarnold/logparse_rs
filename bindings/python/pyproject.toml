@@ -12,3 +12,6 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Rust",
 ]
+
+[tool.maturin]
+python-source = "python"
