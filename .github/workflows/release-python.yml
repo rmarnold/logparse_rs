@@ -28,6 +28,14 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+      - name: Build source distribution (sdist)
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
+        uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+          working-directory: bindings/python
+
       - name: Build wheels with maturin
         uses: PyO3/maturin-action@v1
         with:
