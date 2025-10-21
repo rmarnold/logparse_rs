@@ -1,0 +1,2508 @@
+{
+  "palo_alto_syslog_fields": {
+    "metadata": {
+      "source": "Palo Alto Networks Official Documentation - https://docs.paloaltonetworks.com/ngfw/administration/monitoring/use-syslog-for-monitoring/syslog-field-descriptions",
+      "last_updated": "October 2025",
+      "total_log_types": 15,
+      "note": "Fields marked as FUTURE_USE are reserved and not currently useful for syslog analysis"
+    },
+    "log_types": {
+      "traffic": {
+        "type_value": "TRAFFIC",
+        "description": "Records information about network sessions including start/end times, source/destination, applications, users, and bandwidth usage",
+        "subtypes": ["start", "end", "drop", "deny"],
+        "field_count": 120,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is TRAFFIC"
+          },
+          {
+            "name": "Threat/Content Type",
+            "description": "Subtype of traffic log; values are start, end, drop, and deny"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generated Time",
+            "description": "Time the log was generated on the dataplane"
+          },
+          {
+            "name": "Source Address",
+            "description": "Original session source IP address"
+          },
+          {
+            "name": "Destination Address",
+            "description": "Original session destination IP address"
+          },
+          {
+            "name": "NAT Source IP",
+            "description": "If Source NAT performed, the post-NAT Source IP address"
+          },
+          {
+            "name": "NAT Destination IP",
+            "description": "If Destination NAT performed, the post-NAT Destination IP address"
+          },
+          {
+            "name": "Rule Name",
+            "description": "Name of the rule that the session matched"
+          },
+          {
+            "name": "Source User",
+            "description": "Username of the user who initiated the session"
+          },
+          {
+            "name": "Destination User",
+            "description": "Username of the user to which the session was destined"
+          },
+          {
+            "name": "Application",
+            "description": "Application associated with the session"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System associated with the session"
+          },
+          {
+            "name": "Source Zone",
+            "description": "Zone the session was sourced from"
+          },
+          {
+            "name": "Destination Zone",
+            "description": "Zone the session was destined to"
+          },
+          {
+            "name": "Inbound Interface",
+            "description": "Interface that the session was sourced from"
+          },
+          {
+            "name": "Outbound Interface",
+            "description": "Interface that the session was destined to"
+          },
+          {
+            "name": "Log Action",
+            "description": "Log Forwarding Profile that was applied to the session"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Session ID",
+            "description": "An internal numerical identifier applied to each session"
+          },
+          {
+            "name": "Repeat Count",
+            "description": "Number of sessions with same Source IP, Destination IP, Application, and Subtype seen within 5 seconds"
+          },
+          {
+            "name": "Source Port",
+            "description": "Source port utilized by the session"
+          },
+          {
+            "name": "Destination Port",
+            "description": "Destination port utilized by the session"
+          },
+          {
+            "name": "NAT Source Port",
+            "description": "Post-NAT source port"
+          },
+          {
+            "name": "NAT Destination Port",
+            "description": "Post-NAT destination port"
+          },
+          {
+            "name": "Flags",
+            "description": "32-bit field that provides details on session; can be decoded by AND-ing values with logged value"
+          },
+          {
+            "name": "Protocol",
+            "description": "IP protocol associated with the session"
+          },
+          {
+            "name": "Action",
+            "description": "Action taken for the session; values are allow, deny, drop, reset-server, reset-client, reset-both"
+          },
+          {
+            "name": "Bytes",
+            "description": "Number of total bytes (transmit and receive) for the session"
+          },
+          {
+            "name": "Bytes Sent",
+            "description": "Number of bytes in the client-to-server direction of the session"
+          },
+          {
+            "name": "Bytes Received",
+            "description": "Number of bytes in the server-to-client direction of the session"
+          },
+          {
+            "name": "Packets",
+            "description": "Number of total packets (transmit and receive) for the session"
+          },
+          {
+            "name": "Start Time",
+            "description": "Time of session start"
+          },
+          {
+            "name": "Elapsed Time",
+            "description": "Elapsed time of the session"
+          },
+          {
+            "name": "Category",
+            "description": "URL category associated with the session (if applicable)"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially; each log type has a unique number space"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "Source Country",
+            "description": "Source country or Internal region for private addresses; maximum length is 32 bytes"
+          },
+          {
+            "name": "Destination Country",
+            "description": "Destination country or Internal region for private addresses; maximum length is 32 bytes"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Packets Sent",
+            "description": "Number of client-to-server packets for the session"
+          },
+          {
+            "name": "Packets Received",
+            "description": "Number of server-to-client packets for the session"
+          },
+          {
+            "name": "Session End Reason",
+            "description": "The reason a session terminated; if multiple causes, displays only highest priority reason"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the session; only valid on firewalls enabled for multiple virtual systems"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the session was logged"
+          },
+          {
+            "name": "Action Source",
+            "description": "Specifies whether the action to allow or block was defined in the application or in policy"
+          },
+          {
+            "name": "Source VM UUID",
+            "description": "Source universal unique identifier for a guest virtual machine in the VMware NSX environment"
+          },
+          {
+            "name": "Destination VM UUID",
+            "description": "Destination universal unique identifier for a guest virtual machine in the VMware NSX environment"
+          },
+          {
+            "name": "Tunnel ID/IMSI",
+            "description": "International Mobile Subscriber Identity (IMSI); unique number for mobile subscriber (max 15 digits)"
+          },
+          {
+            "name": "Monitor Tag/IMEI",
+            "description": "International Mobile Equipment Identity (IMEI); unique 15 or 16 digit number for mobile equipment"
+          },
+          {
+            "name": "Parent Session ID",
+            "description": "ID of the session in which this session is tunneled"
+          },
+          {
+            "name": "Parent Start Time",
+            "description": "Year/month/day hours:minutes:seconds that the parent tunnel session began"
+          },
+          {
+            "name": "Tunnel Type",
+            "description": "Type of tunnel, such as GRE or IPSec"
+          },
+          {
+            "name": "SCTP Association ID",
+            "description": "Number that identifies all connections for an association between two SCTP endpoints"
+          },
+          {
+            "name": "SCTP Chunks",
+            "description": "Sum of SCTP chunks sent and received for an association"
+          },
+          {
+            "name": "SCTP Chunks Sent",
+            "description": "Number of SCTP chunks sent for an association"
+          },
+          {
+            "name": "SCTP Chunks Received",
+            "description": "Number of SCTP chunks received for an association"
+          },
+          {
+            "name": "Rule UUID",
+            "description": "The UUID that permanently identifies the rule"
+          },
+          {
+            "name": "HTTP/2 Connection",
+            "description": "Identifies if traffic used an HTTP/2 Connection (0=No, 1=Yes or TCP session ID)"
+          },
+          {
+            "name": "App Flap Count",
+            "description": "Number of link flaps that occurred during the session"
+          },
+          {
+            "name": "Policy ID",
+            "description": "Name of the SD-WAN policy"
+          },
+          {
+            "name": "Link Switches",
+            "description": "Contains up to four link flap entries with link details"
+          },
+          {
+            "name": "SD-WAN Cluster",
+            "description": "Name of the SD-WAN cluster"
+          },
+          {
+            "name": "SD-WAN Device Type",
+            "description": "Type of device (hub or branch)"
+          },
+          {
+            "name": "SD-WAN Cluster Type",
+            "description": "Type of cluster (mesh or hub-spoke)"
+          },
+          {
+            "name": "SD-WAN Site",
+            "description": "Name of the SD-WAN site"
+          },
+          {
+            "name": "Dynamic User Group Name",
+            "description": "Name of the dynamic user group that contains the user who initiated the session"
+          },
+          {
+            "name": "XFF Address",
+            "description": "The IP address from X-Forwarded-For header (proxy/load balancer information)"
+          },
+          {
+            "name": "Source Device Category",
+            "description": "The category for the device that Device-ID identifies as the source of the traffic"
+          },
+          {
+            "name": "Source Device Profile",
+            "description": "The device profile for the device that Device-ID identifies as the source of the traffic"
+          },
+          {
+            "name": "Source Device Model",
+            "description": "The model of the device that Device-ID identifies as the source of the traffic"
+          },
+          {
+            "name": "Source Device Vendor",
+            "description": "The vendor of the device that Device-ID identifies as the source of the traffic"
+          },
+          {
+            "name": "Source Device OS Family",
+            "description": "The operating system type for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device OS Version",
+            "description": "The version of the operating system for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Hostname",
+            "description": "The hostname of the device that Device-ID identifies as the source of the traffic"
+          },
+          {
+            "name": "Source Mac Address",
+            "description": "The MAC address for the device that Device-ID identifies as the source of the traffic"
+          },
+          {
+            "name": "Destination Device Category",
+            "description": "The category for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Profile",
+            "description": "The device profile for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Model",
+            "description": "The model of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Vendor",
+            "description": "The vendor of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device OS Family",
+            "description": "The operating system type for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device OS Version",
+            "description": "The version of the operating system for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Hostname",
+            "description": "The hostname of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Mac Address",
+            "description": "The MAC address for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Container ID",
+            "description": "The container ID of the PAN-NGFW pod on the Kubernetes node where the application POD is deployed"
+          },
+          {
+            "name": "POD Namespace",
+            "description": "The namespace of the application POD being secured"
+          },
+          {
+            "name": "POD Name",
+            "description": "The application POD being secured"
+          },
+          {
+            "name": "Source External Dynamic List",
+            "description": "The name of the external dynamic list that contains the source IP address of the traffic"
+          },
+          {
+            "name": "Destination External Dynamic List",
+            "description": "The name of the external dynamic list that contains the destination IP address"
+          },
+          {
+            "name": "Host ID",
+            "description": "Unique ID GlobalProtect assigns to identify the host"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the user's machine or device"
+          },
+          {
+            "name": "Source Dynamic Address Group",
+            "description": "Original session source dynamic address group"
+          },
+          {
+            "name": "Destination Dynamic Address Group",
+            "description": "Original destination dynamic address group"
+          },
+          {
+            "name": "Session Owner",
+            "description": "The original HA peer session owner in an HA cluster from which session data was synchronized upon failover"
+          },
+          {
+            "name": "High Resolution Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane (format: YYYY-MM-DDThh:ss:sssTZD)"
+          },
+          {
+            "name": "A Slice Service Type",
+            "description": "The A Slice Service Type of the Network Slice ID (5G)"
+          },
+          {
+            "name": "A Slice Differentiator",
+            "description": "The A Slice Differentiator of the Network Slice ID (5G)"
+          },
+          {
+            "name": "Application Subcategory",
+            "description": "The application subcategory specified in the application configuration properties"
+          },
+          {
+            "name": "Application Category",
+            "description": "The application category (business-systems, collaboration, general-internet, media, networking, unknown)"
+          },
+          {
+            "name": "Application Technology",
+            "description": "The application technology (browser-based, client-server, network-protocol, peer-to-peer)"
+          },
+          {
+            "name": "Application Risk",
+            "description": "Risk level associated with the application (1=lowest to 5=highest)"
+          },
+          {
+            "name": "Application Characteristic",
+            "description": "Comma-separated list of applicable characteristics of the application"
+          },
+          {
+            "name": "Application Container",
+            "description": "The parent application for an application"
+          },
+          {
+            "name": "Tunneled Application",
+            "description": "Name of the tunneled application"
+          },
+          {
+            "name": "Application SaaS",
+            "description": "Displays 1 if a SaaS application or 0 if not a SaaS application"
+          },
+          {
+            "name": "Application Sanctioned State",
+            "description": "Displays 1 if application is sanctioned or 0 if not sanctioned"
+          },
+          {
+            "name": "Offloaded",
+            "description": "Displays 1 if traffic flow has been offloaded or 0 if not offloaded"
+          },
+          {
+            "name": "Flow Type",
+            "description": "Identifies the type of proxy used for traffic. If a proxy is used, Explicit Proxy or Transparent Proxy is displayed. If no proxy is used, NonProxyTraffic is displayed"
+          },
+          {
+            "name": "Cluster Name",
+            "description": "NName of the CN-Series firewall cluster"
+          }
+        ]
+      },
+      "threat": {
+        "type_value": "THREAT",
+        "description": "Captures security threats detected by threat prevention profiles including malware, exploits, C2 callbacks, and malicious URLs",
+        "subtypes": ["url", "data", "file", "virus", "spyware", "vulnerability", "wildfire", "wildfire-virus"],
+        "field_count": 130,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is THREAT"
+          },
+          {
+            "name": "Threat/Content Type",
+            "description": "Subtype of threat log (url, data, file, virus, spyware, vulnerability, wildfire, wildfire-virus)"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generated Time",
+            "description": "Time the log was generated on the dataplane"
+          },
+          {
+            "name": "Source Address",
+            "description": "Original session source IP address"
+          },
+          {
+            "name": "Destination Address",
+            "description": "Original session destination IP address"
+          },
+          {
+            "name": "NAT Source IP",
+            "description": "If source NAT performed, the post-NAT source IP address"
+          },
+          {
+            "name": "NAT Destination IP",
+            "description": "If destination NAT performed, the post-NAT destination IP address"
+          },
+          {
+            "name": "Rule Name",
+            "description": "Name of the rule that the session matched"
+          },
+          {
+            "name": "Source User",
+            "description": "Username of the user who initiated the session"
+          },
+          {
+            "name": "Destination User",
+            "description": "Username of the user to which the session was destined"
+          },
+          {
+            "name": "Application",
+            "description": "Application associated with the session"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System associated with the session"
+          },
+          {
+            "name": "Source Zone",
+            "description": "Zone the session was sourced from"
+          },
+          {
+            "name": "Destination Zone",
+            "description": "Zone the session was destined to"
+          },
+          {
+            "name": "Inbound Interface",
+            "description": "Interface that the session was sourced from"
+          },
+          {
+            "name": "Outbound Interface",
+            "description": "Interface that the session was destined to"
+          },
+          {
+            "name": "Log Action",
+            "description": "Log Forwarding Profile that was applied to the session"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Session ID",
+            "description": "An internal numerical identifier applied to each session"
+          },
+          {
+            "name": "Repeat Count",
+            "description": "Number of sessions with same Source IP, Destination IP, Application, and Content/Threat Type seen within 5 seconds"
+          },
+          {
+            "name": "Source Port",
+            "description": "Source port utilized by the session"
+          },
+          {
+            "name": "Destination Port",
+            "description": "Destination port utilized by the session"
+          },
+          {
+            "name": "NAT Source Port",
+            "description": "Post-NAT source port"
+          },
+          {
+            "name": "NAT Destination Port",
+            "description": "Post-NAT destination port"
+          },
+          {
+            "name": "Flags",
+            "description": "32-bit field that provides details on session"
+          },
+          {
+            "name": "IP Protocol",
+            "description": "IP protocol associated with the session"
+          },
+          {
+            "name": "Action",
+            "description": "Action taken for the session (alert, allow, deny, drop, drop-all-packets, reset-client, reset-server, reset-both, block-url)"
+          },
+          {
+            "name": "URL/Filename",
+            "description": "Variable length field: URL (max 1023 chars) or Filename (max 63 chars); content varies by subtype"
+          },
+          {
+            "name": "Threat ID",
+            "description": "Palo Alto Networks identifier for known and custom threats; description string followed by 64-bit numerical identifier"
+          },
+          {
+            "name": "Category",
+            "description": "For URL: URL Category; For WildFire: verdict (malware/phishing/grayware/benign); For others: 'any'"
+          },
+          {
+            "name": "Severity",
+            "description": "Severity associated with the threat (informational, low, medium, high, critical)"
+          },
+          {
+            "name": "Direction",
+            "description": "Indicates the direction of the attack (client-to-server or server-to-client)"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially; each log type has unique number space"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "Source Location",
+            "description": "Source country or Internal region for private addresses; maximum length is 32 bytes"
+          },
+          {
+            "name": "Destination Location",
+            "description": "Destination country or Internal region for private addresses; maximum length is 32 bytes"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Content Type",
+            "description": "Content type of the HTTP response data; maximum length 32 bytes (URL subtype only)"
+          },
+          {
+            "name": "PCAP_ID",
+            "description": "64-bit packet capture ID to correlate threat pcap files with extended pcaps"
+          },
+          {
+            "name": "File Digest",
+            "description": "Binary hash of the file sent to WildFire for analysis (WildFire subtype only)"
+          },
+          {
+            "name": "Cloud",
+            "description": "FQDN of WildFire appliance (private) or WildFire cloud (public) (WildFire subtype only)"
+          },
+          {
+            "name": "URL Index",
+            "description": "Counter to correlate the order of each URL log entry within a single session ID"
+          },
+          {
+            "name": "User Agent",
+            "description": "Web browser that the user used to access the URL (URL Filtering subtype only)"
+          },
+          {
+            "name": "File Type",
+            "description": "Type of file that the firewall forwarded for WildFire analysis (WildFire subtype only)"
+          },
+          {
+            "name": "X-Forwarded-For",
+            "description": "IP address from X-Forwarded-For header; useful when proxy replaces user IP (URL Filtering subtype only)"
+          },
+          {
+            "name": "Referer",
+            "description": "URL of the web page that linked the user to another web page (URL Filtering subtype only)"
+          },
+          {
+            "name": "Sender",
+            "description": "Name of the sender of an email"
+          },
+          {
+            "name": "Subject",
+            "description": "Subject of an email"
+          },
+          {
+            "name": "Recipient",
+            "description": "Name of the receiver of an email"
+          },
+          {
+            "name": "Report ID",
+            "description": "Identifies the analysis request on firewall, WildFire cloud, or WildFire appliance (Data Filtering and WildFire only)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the session"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the session was logged"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Source VM UUID",
+            "description": "Source universal unique identifier for a guest virtual machine in VMware NSX environment"
+          },
+          {
+            "name": "Destination VM UUID",
+            "description": "Destination universal unique identifier for a guest virtual machine in VMware NSX environment"
+          },
+          {
+            "name": "HTTP Method",
+            "description": "HTTP Method used in the web request (Connect, Delete, Get, Head, Options, Post, Put) (URL filtering only)"
+          },
+          {
+            "name": "Tunnel ID/IMSI",
+            "description": "International Mobile Subscriber Identity; unique number for mobile subscriber (max 15 digits)"
+          },
+          {
+            "name": "Monitor Tag/IMEI",
+            "description": "International Mobile Equipment Identity; unique 15 or 16 digit number for mobile equipment"
+          },
+          {
+            "name": "Parent Session ID",
+            "description": "ID of the session in which this session is tunneled"
+          },
+          {
+            "name": "Parent Start Time",
+            "description": "Year/month/day hours:minutes:seconds that the parent tunnel session began"
+          },
+          {
+            "name": "Tunnel Type",
+            "description": "Type of tunnel, such as GRE or IPSec"
+          },
+          {
+            "name": "Threat Category",
+            "description": "Describes threat category (any, command-and-control, dns-c2, dns-ddns, etc.)"
+          },
+          {
+            "name": "Content Version",
+            "description": "Applications and Threats version on your firewall when the log was generated"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "SCTP Association ID",
+            "description": "Number that identifies all connections for an association between two SCTP endpoints"
+          },
+          {
+            "name": "Payload Protocol ID",
+            "description": "ID of the protocol for the payload in the data portion of the data chunk"
+          },
+          {
+            "name": "HTTP Headers",
+            "description": "Indicates the inserted HTTP header in the URL log entries on the firewall"
+          },
+          {
+            "name": "URL Category List",
+            "description": "Lists the URL categories associated with the session"
+          },
+          {
+            "name": "Rule UUID",
+            "description": "The UUID that permanently identifies the rule"
+          },
+          {
+            "name": "HTTP/2 Connection",
+            "description": "TCP connection session ID if HTTP/2, or 0 if not HTTP/2"
+          },
+          {
+            "name": "Dynamic User Group Name",
+            "description": "Name of the dynamic user group that contains the user who initiated the session"
+          },
+          {
+            "name": "XFF Address",
+            "description": "IP address from X-Forwarded-For (proxy/load balancer information)"
+          },
+          {
+            "name": "Source Device Category",
+            "description": "The category for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device Profile",
+            "description": "The device profile for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device Model",
+            "description": "The model of the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device Vendor",
+            "description": "The vendor of the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device OS Family",
+            "description": "The operating system type for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device OS Version",
+            "description": "The version of the operating system for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Hostname",
+            "description": "The hostname of the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source MAC Address",
+            "description": "The MAC address for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Destination Device Category",
+            "description": "The category for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Profile",
+            "description": "The device profile for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Model",
+            "description": "The model of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Vendor",
+            "description": "The vendor of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device OS Family",
+            "description": "The operating system type for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device OS Version",
+            "description": "The version of the operating system for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Hostname",
+            "description": "The hostname of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination MAC Address",
+            "description": "The MAC address for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Container ID",
+            "description": "The container ID of the PAN-NGFW pod on the Kubernetes node"
+          },
+          {
+            "name": "POD Namespace",
+            "description": "The namespace of the application POD being secured"
+          },
+          {
+            "name": "POD Name",
+            "description": "The application POD being secured"
+          },
+          {
+            "name": "Source External Dynamic List",
+            "description": "The name of the external dynamic list that contains the source IP address"
+          },
+          {
+            "name": "Destination External Dynamic List",
+            "description": "The name of the external dynamic list that contains the destination IP address"
+          },
+          {
+            "name": "Host ID",
+            "description": "Unique ID GlobalProtect assigns to identify the host"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the user's machine or device"
+          },
+          {
+            "name": "Domain EDL",
+            "description": "The name of the external dynamic list that contains the domain name of the traffic"
+          },
+          {
+            "name": "Source Dynamic Address Group",
+            "description": "Original session source dynamic address group"
+          },
+          {
+            "name": "Destination Dynamic Address Group",
+            "description": "Original destination dynamic address group"
+          },
+          {
+            "name": "Partial Hash",
+            "description": "Machine Learning partial hash"
+          },
+          {
+            "name": "High Resolution Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane (format: YYYY-MM-DDThh:ss:sssTZD)"
+          },
+          {
+            "name": "Reason",
+            "description": "Reason for Data Filtering action"
+          },
+          {
+            "name": "Justification",
+            "description": "Justification for Data Filtering action"
+          },
+          {
+            "name": "A Slice Service Type",
+            "description": "The A Slice Service Type of the Network Slice ID (5G)"
+          },
+          {
+            "name": "Application Subcategory",
+            "description": "The application subcategory specified in the application configuration properties"
+          },
+          {
+            "name": "Application Category",
+            "description": "The application category (business-systems, collaboration, general-internet, media, networking, saas)"
+          },
+          {
+            "name": "Application Technology",
+            "description": "The application technology (browser-based, client-server, network-protocol, peer-to-peer)"
+          },
+          {
+            "name": "Application Risk",
+            "description": "Risk level associated with the application (1=lowest to 5=highest)"
+          },
+          {
+            "name": "Application Characteristic",
+            "description": "Comma-separated list of applicable characteristics of the application"
+          },
+          {
+            "name": "Application Container",
+            "description": "The parent application for an application"
+          },
+          {
+            "name": "Tunneled Application",
+            "description": "Name of the tunneled application"
+          },
+          {
+            "name": "Application SaaS",
+            "description": "Displays 1 if a SaaS application or 0 if not"
+          },
+          {
+            "name": "Application Sanctioned State",
+            "description": "Displays 1 if application is sanctioned or 0 if not"
+          },
+          {
+            "name": "Cloud Report ID",
+            "description": "Unique 32 (PAN-OS 10.2.0) or 67 character (10.2.1+) ID for file scanned by DLP cloud service"
+          }
+        ]
+      },
+      "globalprotect": {
+        "type_value": "GLOBALPROTECT",
+        "description": "Records GlobalProtect VPN client connections, authentications, gateway selections, and connection errors",
+        "subtypes": ["gateway-switch-to-ssl", "gateway-switch-to-ipsec", "connect", "disconnect", "login", "logout", "auth-fail", "pre-login", "before-login"],
+        "field_count": 42,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "The time that the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "The serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is GLOBALPROTECT"
+          },
+          {
+            "name": "Threat/Content Type",
+            "description": "Subtype of GlobalProtect log (gateway events, authentication events, etc.)"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generated Time",
+            "description": "The time that the log was generated on the dataplane"
+          },
+          {
+            "name": "Virtual System",
+            "description": "The Virtual System associated with the session"
+          },
+          {
+            "name": "Event ID",
+            "description": "A string showing the name of the event"
+          },
+          {
+            "name": "Stage",
+            "description": "A string showing the stage of the connection (before-login, login, or tunnel)"
+          },
+          {
+            "name": "Authentication Method",
+            "description": "A string showing the authentication type, such as LDAP, RADIUS, or SAML"
+          },
+          {
+            "name": "Tunnel Type",
+            "description": "The type of tunnel (either SSLVPN or IPSec)"
+          },
+          {
+            "name": "Source User",
+            "description": "The username of the user who initiated the session"
+          },
+          {
+            "name": "Source Region",
+            "description": "The region for the user who initiated the session"
+          },
+          {
+            "name": "Machine Name",
+            "description": "The name of the user's machine"
+          },
+          {
+            "name": "Public IP",
+            "description": "The public IP address for the user who initiated the session"
+          },
+          {
+            "name": "Public IPv6",
+            "description": "The public IPv6 address for the user who initiated the session"
+          },
+          {
+            "name": "Private IP",
+            "description": "The private IP address for the user who initiated the session"
+          },
+          {
+            "name": "Private IPv6",
+            "description": "The private IPv6 address for the user who initiated the session"
+          },
+          {
+            "name": "Host ID",
+            "description": "The unique ID that GlobalProtect assigns to identify the host"
+          },
+          {
+            "name": "Serial Number",
+            "description": "The serial number of the user's machine or device"
+          },
+          {
+            "name": "Client Version",
+            "description": "The client's GlobalProtect app version"
+          },
+          {
+            "name": "Client OS",
+            "description": "The client device's OS type (Windows, Linux, macOS, iOS, Android)"
+          },
+          {
+            "name": "Client OS Version",
+            "description": "The client device's OS version"
+          },
+          {
+            "name": "Repeat Count",
+            "description": "The number of sessions with same source IP, destination IP, application, and subtype within last 5 seconds"
+          },
+          {
+            "name": "Reason",
+            "description": "A string that shows the reason for the quarantine"
+          },
+          {
+            "name": "Error",
+            "description": "A string showing the error that has occurred in any event"
+          },
+          {
+            "name": "Description",
+            "description": "Additional information for any event that has occurred"
+          },
+          {
+            "name": "Status",
+            "description": "The status (success or failure) of the event"
+          },
+          {
+            "name": "Location",
+            "description": "A string showing the administrator-defined location of the GlobalProtect portal or gateway"
+          },
+          {
+            "name": "Login Duration",
+            "description": "The length of time, in seconds, the user is connected to GlobalProtect gateway from login to logout"
+          },
+          {
+            "name": "Connect Method",
+            "description": "How the GlobalProtect app connects to Gateway (on-demand or user-logon)"
+          },
+          {
+            "name": "Error Code",
+            "description": "An integer associated with any errors that occurred"
+          },
+          {
+            "name": "Portal",
+            "description": "The name of the GlobalProtect portal or gateway"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "High Res Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane"
+          },
+          {
+            "name": "Selection Type",
+            "description": "The connection method selected to connect to the gateway (priority, manual, or always-on)"
+          },
+          {
+            "name": "Response Time",
+            "description": "The SSL response time of the selected gateway measured in milliseconds during tunnel setup"
+          },
+          {
+            "name": "Priority",
+            "description": "The priority order of the gateway (highest=1, high=2, medium=3, low=4, lowest=5)"
+          },
+          {
+            "name": "Attempted Gateways",
+            "description": "Fields collected for each gateway connection attempt (gateway name, SSL response time, priority)"
+          },
+          {
+            "name": "Gateway",
+            "description": "The name of the gateway specified on the portal configuration"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the session"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the session was logged"
+          },
+          {
+            "name": "Virtual System ID",
+            "description": "A unique identifier for a virtual system on a Palo Alto Networks firewall"
+          },
+          {
+            "name": "Cluster Name",
+            "description": "Name of the CN-Series firewall cluster (11.1 and later releases)"
+          }
+        ]
+      },
+      "decryption": {
+        "type_value": "DECRYPTION",
+        "description": "Records TLS/SSL decryption sessions, certificate details, and decryption errors for troubleshooting and monitoring encrypted traffic inspection",
+        "subtypes": [],
+        "field_count": 93,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is DECRYPTION"
+          },
+          {
+            "name": "Threat/Content Type",
+            "description": "Not used in the Decryption log"
+          },
+          {
+            "name": "Config Version",
+            "description": "The software version"
+          },
+          {
+            "name": "Generate Time",
+            "description": "Time the log was generated on the dataplane"
+          },
+          {
+            "name": "Source Address",
+            "description": "Original session source IP address"
+          },
+          {
+            "name": "Destination Address",
+            "description": "Original session destination IP address"
+          },
+          {
+            "name": "NAT Source IP",
+            "description": "If Source NAT performed, the post-NAT Source IP address"
+          },
+          {
+            "name": "NAT Destination IP",
+            "description": "If Destination NAT performed, the post-NAT Destination IP address"
+          },
+          {
+            "name": "Rule",
+            "description": "Security policy rule that controls the session traffic"
+          },
+          {
+            "name": "Source User",
+            "description": "Username of the user who initiated the session"
+          },
+          {
+            "name": "Destination User",
+            "description": "Username of the user to which the session was destined"
+          },
+          {
+            "name": "Application",
+            "description": "Application associated with the session"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System associated with the session"
+          },
+          {
+            "name": "Source Zone",
+            "description": "Zone the session was sourced from"
+          },
+          {
+            "name": "Destination Zone",
+            "description": "Zone the session was destined to"
+          },
+          {
+            "name": "Inbound Interface",
+            "description": "Interface that the session was sourced from"
+          },
+          {
+            "name": "Outbound Interface",
+            "description": "Interface that the session was destined to"
+          },
+          {
+            "name": "Log Action",
+            "description": "Log Forwarding profile applied to the session"
+          },
+          {
+            "name": "Time Logged",
+            "description": "The time the log was received"
+          },
+          {
+            "name": "Session ID",
+            "description": "An internal numerical identifier applied to each session"
+          },
+          {
+            "name": "Repeat Count",
+            "description": "Number of sessions with same Source IP, Destination IP, Application, and Content/Threat Type within 5 seconds"
+          },
+          {
+            "name": "Source Port",
+            "description": "Source port utilized by the session"
+          },
+          {
+            "name": "Destination Port",
+            "description": "Destination port utilized by the session"
+          },
+          {
+            "name": "NAT Source Port",
+            "description": "Post-NAT source port"
+          },
+          {
+            "name": "NAT Destination Port",
+            "description": "Post-NAT destination port"
+          },
+          {
+            "name": "Flags",
+            "description": "32-bit field that provides details on session"
+          },
+          {
+            "name": "IP Protocol",
+            "description": "IP protocol associated with the session"
+          },
+          {
+            "name": "Action",
+            "description": "Action taken for the session (allow, deny, drop, reset-server, reset-client, reset-both)"
+          },
+          {
+            "name": "Tunnel",
+            "description": "Type of tunnel"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Source VM UUID",
+            "description": "The source universal unique identifier for a guest virtual machine in VMware NSX environment"
+          },
+          {
+            "name": "Destination VM UUID",
+            "description": "The destination universal unique identifier for a guest virtual machine in VMware NSX environment"
+          },
+          {
+            "name": "UUID for rule",
+            "description": "The UUID that permanently identifies the rule"
+          },
+          {
+            "name": "Stage for Client to Firewall",
+            "description": "The stage of the TLS handshake from client to firewall (Client Hello, Server Hello, Certificate, etc.)"
+          },
+          {
+            "name": "Stage for Firewall to Server",
+            "description": "The stage of the TLS handshake from firewall to server"
+          },
+          {
+            "name": "TLS Version",
+            "description": "The version of TLS protocol used for the session"
+          },
+          {
+            "name": "Key Exchange Algorithm",
+            "description": "The key exchange algorithm used for the session"
+          },
+          {
+            "name": "Encryption Algorithm",
+            "description": "The algorithm used to encrypt the session data (AES-128-CBC, AES-256-GCM, etc.)"
+          },
+          {
+            "name": "Hash Algorithm",
+            "description": "The authentication algorithm used for the session (SHA, SHA256, SHA384, etc.)"
+          },
+          {
+            "name": "Policy Name",
+            "description": "The name of the Decryption policy associated with the session"
+          },
+          {
+            "name": "Elliptic Curve",
+            "description": "The elliptic cryptography curve used for connections with ECDHE cipher suites"
+          },
+          {
+            "name": "Error Index",
+            "description": "The type of error that occurred (Cipher, Resource, Resume, Version, Protocol, Certificate, Feature, HSM)"
+          },
+          {
+            "name": "Root Status",
+            "description": "The status of the root certificate (trusted, untrusted, or uninspected)"
+          },
+          {
+            "name": "Chain Status",
+            "description": "Whether the certificate chain is trusted (Trusted, Untrusted, or Uninspected)"
+          },
+          {
+            "name": "Proxy Type",
+            "description": "The Decryption proxy type (Forward, Inbound, No Decrypt, GlobalProtect, etc.)"
+          },
+          {
+            "name": "Certificate Serial Number",
+            "description": "The unique identifier of the certificate (generated by the certificate issuer)"
+          },
+          {
+            "name": "Fingerprint",
+            "description": "A hash of the certificate in x509 binary format"
+          },
+          {
+            "name": "Certificate Start Date",
+            "description": "The time the certificate became valid (invalid before this time)"
+          },
+          {
+            "name": "Certificate End Date",
+            "description": "The time the certificate expires (invalid after this time)"
+          },
+          {
+            "name": "Certificate Version",
+            "description": "The certificate version (V1, V2, or V3)"
+          },
+          {
+            "name": "Certificate Size",
+            "description": "The certificate key size"
+          },
+          {
+            "name": "Common Name Length",
+            "description": "The length of the subject common name"
+          },
+          {
+            "name": "Issuer Common Name Length",
+            "description": "The length of the issuer common name"
+          },
+          {
+            "name": "Root Common Name Length",
+            "description": "The length of the root common name"
+          },
+          {
+            "name": "SNI Length",
+            "description": "The length of the Server Name Indication (hostname)"
+          },
+          {
+            "name": "Certificate Flags",
+            "description": "Certificate flags indicating properties (Self-signed, Expired, Untrusted, etc.)"
+          },
+          {
+            "name": "Subject Common Name",
+            "description": "The domain name (the name of the server that the certificate protects)"
+          },
+          {
+            "name": "Issuer Subject Common Name",
+            "description": "The name of the organization that verified the certificate's contents"
+          },
+          {
+            "name": "Root Subject Common Name",
+            "description": "The name of the root certificate authority"
+          },
+          {
+            "name": "Server Name Indication",
+            "description": "The hostname of the server that the client is trying to contact (enables multiple websites on same IP)"
+          },
+          {
+            "name": "Error",
+            "description": "A string showing the error that has occurred in the event"
+          },
+          {
+            "name": "Container ID",
+            "description": "A unique alphanumeric string that identifies the container if firewall runs in cloud container"
+          },
+          {
+            "name": "POD Namespace",
+            "description": "The name of the Kubernetes pod namespace"
+          },
+          {
+            "name": "POD Name",
+            "description": "The name of the kubernetes pod"
+          },
+          {
+            "name": "Source External Dynamic List",
+            "description": "The name of the external dynamic list that contains the source IP address"
+          },
+          {
+            "name": "Destination External Dynamic List",
+            "description": "The name of the external dynamic list that contains the destination IP address"
+          },
+          {
+            "name": "Source Dynamic Address Group",
+            "description": "The dynamic address group that Device-ID identifies as the source"
+          },
+          {
+            "name": "Destination Dynamic Address Group",
+            "description": "The dynamic address group that Device-ID identifies as the destination"
+          },
+          {
+            "name": "High Res Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane (YYYY-MM-DDThh:ss:sssTZD)"
+          },
+          {
+            "name": "Source Device Category",
+            "description": "The category for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device Profile",
+            "description": "The device profile for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device Model",
+            "description": "The model of the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device Vendor",
+            "description": "The vendor of the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device OS Family",
+            "description": "The operating system type for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Device OS Version",
+            "description": "The version of the operating system for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Hostname",
+            "description": "The hostname of the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Source Mac Address",
+            "description": "The MAC address for the device that Device-ID identifies as the source"
+          },
+          {
+            "name": "Destination Device Category",
+            "description": "The category for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Profile",
+            "description": "The device profile for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Model",
+            "description": "The model of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device Vendor",
+            "description": "The vendor of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device OS Family",
+            "description": "The operating system type for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Device OS Version",
+            "description": "The version of the operating system for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Hostname",
+            "description": "The hostname of the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Destination Mac Address",
+            "description": "The MAC address for the device that Device-ID identifies as the destination"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the session"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the session was logged"
+          },
+          {
+            "name": "Virtual System ID",
+            "description": "A unique identifier for a virtual system on a Palo Alto Networks firewall"
+          },
+          {
+            "name": "Application Subcategory",
+            "description": "The application subcategory specified in the application configuration properties"
+          },
+          {
+            "name": "Application Category",
+            "description": "The application category (business-systems, collaboration, general-internet, media, networking, saas)"
+          },
+          {
+            "name": "Application Technology",
+            "description": "The application technology (browser-based, client-server, network-protocol, peer-to-peer)"
+          },
+          {
+            "name": "Application Risk",
+            "description": "Risk level associated with the application (1=lowest to 5=highest)"
+          },
+          {
+            "name": "Application Characteristic",
+            "description": "Comma-separated list of applicable characteristics of the application"
+          },
+          {
+            "name": "Application Container",
+            "description": "The parent application for an application"
+          },
+          {
+            "name": "Application SaaS",
+            "description": "Displays 1 if a SaaS application or 0 if not"
+          },
+          {
+            "name": "Application Sanctioned State",
+            "description": "Displays 1 if application is sanctioned or 0 if not"
+          },
+          {
+            "name": "Cluster Name",
+            "description": "Name of the CN-Series firewall cluster"
+          }
+        ]
+      },
+      "sctp": {
+        "type_value": "SCTP",
+        "description": "Records SCTP (Stream Control Transmission Protocol) session events, commonly used in telecommunications and SS7 signaling",
+        "subtypes": [],
+        "field_count": 53,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is SCTP"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generated Time",
+            "description": "Time the log was generated on the dataplane"
+          },
+          {
+            "name": "Source Address",
+            "description": "Original session source IP address"
+          },
+          {
+            "name": "Destination Address",
+            "description": "Original session destination IP address"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Rule Name",
+            "description": "Name of the Security policy rule in effect on the session"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System associated with the session"
+          },
+          {
+            "name": "Source Zone",
+            "description": "Zone the session was sourced from"
+          },
+          {
+            "name": "Destination Zone",
+            "description": "Zone the session was destined to"
+          },
+          {
+            "name": "Inbound Interface",
+            "description": "Interface that the session was sourced from"
+          },
+          {
+            "name": "Outbound Interface",
+            "description": "Interface that the session was destined to"
+          },
+          {
+            "name": "Log Action",
+            "description": "Log Forwarding Profile that was applied to the session"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Session ID",
+            "description": "An internal numerical identifier applied to each session"
+          },
+          {
+            "name": "Repeat Count",
+            "description": "Number of sessions with same Source IP, Destination IP, Application, and Subtype within 5 seconds"
+          },
+          {
+            "name": "Source Port",
+            "description": "Source port utilized by the session"
+          },
+          {
+            "name": "Destination Port",
+            "description": "Destination port utilized by the session"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "IP Protocol",
+            "description": "IP protocol associated with the session"
+          },
+          {
+            "name": "Action",
+            "description": "Action taken for the session (allow, deny, drop, reset-server, reset-client, reset-both)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the session"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the session was logged"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "SCTP Association ID",
+            "description": "An internal 56-bit numerical identifier applied to each SCTP association"
+          },
+          {
+            "name": "Payload Protocol ID",
+            "description": "Identifies the Payload Protocol ID (PPID) in the data chunk which triggered this event"
+          },
+          {
+            "name": "Severity",
+            "description": "Severity associated with the event (informational, low, medium, high, critical)"
+          },
+          {
+            "name": "SCTP Chunk Type",
+            "description": "Describes the type of information contained in a chunk (control or data)"
+          },
+          {
+            "name": "SCTP Event Type",
+            "description": "Defines the event triggered per SCTP chunk or packet when SCTP protection profile is applied"
+          },
+          {
+            "name": "SCTP Verification Tag 1",
+            "description": "Used by endpoint1 to verify if SCTP packet belongs to current association and validate endpoint2"
+          },
+          {
+            "name": "SCTP Verification Tag 2",
+            "description": "Used by endpoint2 to verify if SCTP packet belongs to current association and validate endpoint1"
+          },
+          {
+            "name": "SCTP Cause Code",
+            "description": "Sent by endpoint to specify reason for an error condition to other endpoint"
+          },
+          {
+            "name": "Diameter App ID",
+            "description": "The diameter application in the data chunk which triggered the event"
+          },
+          {
+            "name": "Diameter Command Code",
+            "description": "The diameter command code in the data chunk which triggered the event"
+          },
+          {
+            "name": "Diameter AVP Code",
+            "description": "The diameter AVP code in the data chunk which triggered the event"
+          },
+          {
+            "name": "SCTP Stream ID",
+            "description": "ID of the stream which carries the data chunk which triggered the event"
+          },
+          {
+            "name": "SCTP Association End Reason",
+            "description": "Reason an association was terminated (highest priority reason if multiple causes)"
+          },
+          {
+            "name": "Op Code",
+            "description": "Identifies the operation code of application layer SS7 protocols like MAP or CAP"
+          },
+          {
+            "name": "SCCP Calling Party SSN",
+            "description": "The SCCP calling party subsystem number in the data chunk which triggered the event"
+          },
+          {
+            "name": "SCCP Calling Party Global Title",
+            "description": "The SCCP calling party global title in the data chunk which triggered the event"
+          },
+          {
+            "name": "SCTP Filter",
+            "description": "Name of the filter that the SCTP chunk matched"
+          },
+          {
+            "name": "SCTP Chunks",
+            "description": "Number of total chunks (transmit and receive) for the association"
+          },
+          {
+            "name": "SCTP Chunks Sent",
+            "description": "Number of endpoint1-to-endpoint2 chunks for the association"
+          },
+          {
+            "name": "SCTP Chunks Received",
+            "description": "Number of endpoint2-to-endpoint1 chunks for the association"
+          },
+          {
+            "name": "Packets",
+            "description": "Number of total packets (transmit and receive) for the session"
+          },
+          {
+            "name": "Packets Sent",
+            "description": "Number of client-to-server packets for the session"
+          },
+          {
+            "name": "Packets Received",
+            "description": "Number of server-to-client packets for the session"
+          },
+          {
+            "name": "UUID for rule",
+            "description": "The UUID that permanently identifies the rule"
+          },
+          {
+            "name": "High Resolution Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane (YYYY-MM-DDThh:ss:sssTZD)"
+          }
+        ]
+      },
+      "system": {
+        "type_value": "SYSTEM",
+        "description": "Records system events including daemon activities, configuration changes, HA status, authentication events, and hardware alerts",
+        "subtypes": ["crypto", "dhcp", "dnsproxy", "dos", "general", "global-protect", "ha", "hw", "nat", "ntpd", "pbf", "port", "pppoe", "ras", "routing", "satd", "sslmgr", "sslvpn", "userid", "url-filtering", "vpn"],
+        "field_count": 21,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is SYSTEM"
+          },
+          {
+            "name": "Content/Threat Type",
+            "description": "Subtype of the system log; refers to the system daemon generating the log"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generated Time",
+            "description": "Time the log was generated on the dataplane"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System associated with the event"
+          },
+          {
+            "name": "Event ID",
+            "description": "Event identifier for the system event"
+          },
+          {
+            "name": "Object",
+            "description": "Object associated with the system event"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Module",
+            "description": "Module that generated the system log"
+          },
+          {
+            "name": "Severity",
+            "description": "Severity of the system event (informational, low, medium, high, critical)"
+          },
+          {
+            "name": "Description",
+            "description": "Detailed description of the system event"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the event"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the event was logged"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "High Resolution Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane"
+          }
+        ]
+      },
+      "config": {
+        "type_value": "CONFIG",
+        "description": "Records configuration changes made to the firewall including what was changed, who made the change, and when",
+        "subtypes": [],
+        "field_count": 23,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is CONFIG"
+          },
+          {
+            "name": "Subtype",
+            "description": "Subtype of config log"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generated Time",
+            "description": "Time the log was generated"
+          },
+          {
+            "name": "Host",
+            "description": "Hostname of the firewall"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System where the configuration change was made"
+          },
+          {
+            "name": "Command",
+            "description": "Type of configuration command executed"
+          },
+          {
+            "name": "Admin",
+            "description": "Administrator username who made the configuration change"
+          },
+          {
+            "name": "Client",
+            "description": "Client type used to make the change (Web, CLI, or Panorama)"
+          },
+          {
+            "name": "Result",
+            "description": "Result of the configuration change (succeeded or failed)"
+          },
+          {
+            "name": "Configuration Path",
+            "description": "Path to the configuration object that was changed"
+          },
+          {
+            "name": "Before Change Detail",
+            "description": "Configuration details before the change was made"
+          },
+          {
+            "name": "After Change Detail",
+            "description": "Configuration details after the change was made"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the configuration change"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the configuration was changed"
+          },
+          {
+            "name": "Device Group",
+            "description": "Device group name"
+          },
+          {
+            "name": "Audit Comment",
+            "description": "Audit comment associated with the configuration change"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "High Resolution Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane"
+          }
+        ]
+      },
+      "hip_match": {
+        "type_value": "HIPMATCH",
+        "description": "Records Host Information Profile (HIP) matches showing endpoint security posture including installed software, OS version, disk encryption status",
+        "subtypes": [],
+        "field_count": 23,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is HIPMATCH"
+          },
+          {
+            "name": "Threat/Content Type",
+            "description": "Subtype of HIP match log"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generated Time",
+            "description": "Time the log was generated on the dataplane"
+          },
+          {
+            "name": "Source User",
+            "description": "Username of the user associated with the endpoint"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System associated with the HIP match"
+          },
+          {
+            "name": "Machine Name",
+            "description": "Name of the endpoint machine"
+          },
+          {
+            "name": "Operating System",
+            "description": "Operating system of the endpoint"
+          },
+          {
+            "name": "Source Address",
+            "description": "IP address of the endpoint"
+          },
+          {
+            "name": "HIP",
+            "description": "Name of the HIP profile that matched"
+          },
+          {
+            "name": "Repeat Count",
+            "description": "Number of times this HIP match occurred within 5 seconds"
+          },
+          {
+            "name": "HIP Type",
+            "description": "Type of HIP match"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the HIP match"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the HIP match was logged"
+          },
+          {
+            "name": "Virtual System ID",
+            "description": "A unique identifier for a virtual system on a Palo Alto Networks firewall"
+          },
+          {
+            "name": "IPv6 Source Address",
+            "description": "IPv6 address of the endpoint"
+          },
+          {
+            "name": "Host ID",
+            "description": "Unique ID GlobalProtect assigns to identify the host"
+          },
+          {
+            "name": "User Device Serial Number",
+            "description": "Serial number of the user's machine or device"
+          }
+        ]
+      },
+      "userid": {
+        "type_value": "USERID",
+        "description": "Records user-to-IP address mappings and authentication timestamps for User-ID functionality",
+        "subtypes": ["login", "logout", "group-mapping", "custom"],
+        "field_count": 28,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is USERID"
+          },
+          {
+            "name": "Subtype",
+            "description": "Subtype of User-ID log (login, logout, group-mapping, custom)"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generated Time",
+            "description": "Time the log was generated"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System associated with the User-ID mapping"
+          },
+          {
+            "name": "Source IP",
+            "description": "IP address that was mapped to a user"
+          },
+          {
+            "name": "User",
+            "description": "Username that was mapped to the IP address"
+          },
+          {
+            "name": "Data Source",
+            "description": "Source of the user mapping data"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Repeat Count",
+            "description": "Number of times this mapping occurred within 5 seconds"
+          },
+          {
+            "name": "Timeout",
+            "description": "Timeout value for the user mapping"
+          },
+          {
+            "name": "Source Port",
+            "description": "Source port for the user mapping"
+          },
+          {
+            "name": "Destination Port",
+            "description": "Destination port for the user mapping"
+          },
+          {
+            "name": "Data Source Name",
+            "description": "Name of the data source that provided the user mapping"
+          },
+          {
+            "name": "Data Source Type",
+            "description": "Type of data source (Active Directory, Syslog, etc.)"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "Device Group Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "Device Group Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the user mapping"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the mapping was logged"
+          },
+          {
+            "name": "Virtual System ID",
+            "description": "A unique identifier for a virtual system on a Palo Alto Networks firewall"
+          },
+          {
+            "name": "Factor Type",
+            "description": "Type of authentication factor used"
+          },
+          {
+            "name": "Factor Completion Time",
+            "description": "Time when the authentication factor was completed"
+          },
+          {
+            "name": "Factor Number",
+            "description": "Number identifying the authentication factor"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Authentication Policy",
+            "description": "Authentication policy that was applied"
+          },
+          {
+            "name": "High Resolution Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane"
+          }
+        ]
+      },
+      "iptag": {
+        "type_value": "IPTAG",
+        "description": "Records when source IP addresses are registered/unregistered and tagged on the firewall (Dynamic Address Groups)",
+        "subtypes": [],
+        "field_count": 23,
+        "fields": [
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Receive Time",
+            "description": "Time the log was received at the management plane"
+          },
+          {
+            "name": "Serial Number",
+            "description": "Serial number of the firewall that generated the log"
+          },
+          {
+            "name": "Type",
+            "description": "Specifies the type of log; value is IPTAG"
+          },
+          {
+            "name": "Threat/Content Type",
+            "description": "Subtype of IP-Tag log"
+          },
+          {
+            "name": "FUTURE_USE",
+            "description": "Reserved field for future use"
+          },
+          {
+            "name": "Generate Time",
+            "description": "Time the log was generated"
+          },
+          {
+            "name": "Virtual System",
+            "description": "Virtual System associated with the IP tagging event"
+          },
+          {
+            "name": "Source IP",
+            "description": "IP address that was tagged or untagged"
+          },
+          {
+            "name": "Tag Name",
+            "description": "Name of the tag that was applied or removed"
+          },
+          {
+            "name": "Event ID",
+            "description": "Event identifier (register or unregister)"
+          },
+          {
+            "name": "Repeat Count",
+            "description": "Number of times this tagging event occurred within 5 seconds"
+          },
+          {
+            "name": "Timeout",
+            "description": "Timeout value for the IP tag"
+          },
+          {
+            "name": "Data Source Name",
+            "description": "Name of the data source that provided the IP tag"
+          },
+          {
+            "name": "Data Source Type",
+            "description": "Type of data source that provided the IP tag"
+          },
+          {
+            "name": "Data Source Subtype",
+            "description": "Subtype of the data source"
+          },
+          {
+            "name": "Sequence Number",
+            "description": "A 64-bit log entry identifier incremented sequentially"
+          },
+          {
+            "name": "Action Flags",
+            "description": "A bit field indicating if the log was forwarded to Panorama"
+          },
+          {
+            "name": "DG Hierarchy Level 1",
+            "description": "Identification number indicating device group's location within hierarchy (level 1)"
+          },
+          {
+            "name": "DG Hierarchy Level 2",
+            "description": "Identification number indicating device group's location within hierarchy (level 2)"
+          },
+          {
+            "name": "DG Hierarchy Level 3",
+            "description": "Identification number indicating device group's location within hierarchy (level 3)"
+          },
+          {
+            "name": "DG Hierarchy Level 4",
+            "description": "Identification number indicating device group's location within hierarchy (level 4)"
+          },
+          {
+            "name": "Virtual System Name",
+            "description": "The name of the virtual system associated with the IP tagging"
+          },
+          {
+            "name": "Device Name",
+            "description": "The hostname of the firewall on which the IP tag was logged"
+          },
+          {
+            "name": "Virtual System ID",
+            "description": "A unique identifier for a virtual system on a Palo Alto Networks firewall"
+          },
+          {
+            "name": "High Resolution Timestamp",
+            "description": "Time in milliseconds the log was received at the management plane"
+          }
+        ]
+      }
+    }
+  }
+}

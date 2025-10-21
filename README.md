@@ -14,6 +14,7 @@ This repository is a small monorepo:
 Features:
 - Quote-aware CSV tokenizer (Rust, memchr-accelerated)
 - Schema-driven KV parsing (load at runtime from JSON)
+- Unified intermediate representation (IR) bridging a JSON abstract schema and the Rust encoding algorithm at runtime
 - Enriched results with raw excerpts and stable 64-bit hash
 - Optional anonymization with deterministic replacements and integrity table
 - Environment-based preloading for hot paths
@@ -150,6 +151,7 @@ print(res2["parsed"]["source_address"])  # anonymized
 
 - CSV helpers: `split_csv`, `extract_field`, `extract_type_subtype`
 - Schema: `load_schema`, `parse_kv`, `parse_kv_with_schema`, `parse_kv_enriched`, `parse_kv_enriched_with_schema`, `get_schema_status`
+- Batch/streaming: `parse_many(...)`, `parse_file(...)`, `parse_many_parallel(...)`, `parse_file_parallel(...)`, `parse_file_to_ndjson(input_path, output_path, schema_path=None)`
 - Anonymizer: `load_anonymizer`, `set_anonymizer_json`, `get_anonymizer_status`, `export_integrity_table`, `parse_kv_enriched_anon`, `parse_kv_enriched_with_schema_anon`
 
 ## Environment Variables (preload)
@@ -202,6 +204,83 @@ lp.load_schema("schemas/palo_alto_schema.json")
 
 Note: when installed as a wheel, only the compiled extension is shipped by default. Treat the included schema as a local example; in production, point `load_schema()` to your own schema file or manage schemas in your application repository. You can also set `LOGPARSE_PRELOAD_SCHEMA` to that path to auto-load on import.
 
+
+## Benchmarking Rust acceleration
+
+A simple benchmark script is included to compare Rust-accelerated parsing to the pure-Python fallback. It measures wall-clock time over multiple iterations and saves a plot.
+
+Example:
+
+```bash
+python examples/benchmark.py \
+  --file examples/sample_logs/pan_inc.log \
+  --schema examples/schema/schema.json \
+  --iterations 5 \
+  --plot-out examples/benchmark.png
+```
+
+Notes:
+- The script runs two modes: Rust (accel) and Python (no accel). It toggles an env var internally.
+- You can also manually control the toggle in your own code using:
+  - `LOGPARSE_RS_DISABLE_RUST=1` to force pure-Python path
+  - unset or `LOGPARSE_RS_DISABLE_RUST=0` to use Rust if available
+- Anonymized parsing requires the Rust anonymizer. In Python mode, anonymized runs are skipped.
+
+### Advanced benchmarking and bottleneck analysis
+
+For deeper insight (throughput, per-iteration timelines, internal parser time vs overhead, and a richer 4-panel plot), use:
+
+```bash
+python examples/benchmark_advanced.py \
+  --file examples/sample_logs/pan_inc.log \
+  --schema examples/schema/schema.json \
+  --iterations 50 \
+  --plot-out examples/benchmark_advanced.png
+```
+
+This script also prints JSON including:
+- wall_ms statistics (mean/median/p90/p99/min/max)
+- internal_ms_from_records (sum of per-record runtime_ns where available)
+- cpu_time_ms (user+sys from the OS, when available)
+- throughput_lines_per_sec_mean and a bottleneck_hint per mode
+
+#### Parallel parsing (experimental)
+
+#### Eliminating Python overhead with NDJSON streaming (new)
+
+When your benchmarks show that Rust internal parser time is small and overall wall time is dominated by Python iteration or file I/O, you can offload the whole loop to Rust and write directly to disk as newline-delimited JSON (NDJSON):
+
+```python
+from logparse_rs import rust_accel
+
+rust_accel.load_schema("examples/schema/schema.json")
+# Parse and write NDJSON entirely in Rust (one FFI call per file)
+out_lines = rust_accel.parse_file_to_ndjson(
+    "examples/sample_logs/pan_inc.log",
+    "reports/pan_inc.ndjson",
+)
+print("wrote", out_lines, "records")
+```
+
+The output records mirror `parse_kv_enriched()` shape (keys: `parsed`, `raw_excerpt`, `hash64`, `runtime_ns`). This path minimizes Python overhead and is ideal for large batch conversions or piping into downstream tools.
+
+The Rust bindings include a parallel batch parser powered by Rayon. The advanced benchmark can use it for Rust mode:
+
+```bash
+python examples/benchmark_advanced.py \
+  --file examples/sample_logs/pan_inc.log \
+  --schema examples/schema/schema.json \
+  --iterations 50 \
+  --rust-parallel \
+  --rayon-threads 8 \
+  --batch-size 2048 \
+  --plot-out examples/benchmark_advanced.png
+```
+
+- Set `--rayon-threads N` to override the thread count (defaults to number of CPU cores or `RAYON_NUM_THREADS`).
+- `--batch-size` controls how many lines are processed per Rust call; increase for fewer crossings between Python and Rust.
+- Programmatic API: `rust_accel.parse_file_parallel(path, batch_size=1024, rayon_threads=None, schema_path=...)` and `rust_accel.parse_many_parallel(iterable, ...)`.
+- Limitations: current parallel fast path does not yet support anonymized parsing; it falls back to the sequential path for anonymized runs. Streaming output is chunked; memory usage scales with batch size.
 
 ## Troubleshooting
 
@@ -317,3 +396,74 @@ This project does not handle secrets directly, but anonymization makes determini
 
 ## Changelog
 See Git history and release notes on GitHub Releases once publishing starts.
+
+
+## Exporting the anonymizer integrity table
+
+If you enable anonymization, the library tracks a per-field integrity table mapping original values to their anonymized replacements. You can retrieve it (and optionally write it to JSON) from Python via the rust_accel helper:
+
+```python
+from logparse_rs import rust_accel
+
+# After loading schema and anonymizer and processing some lines...
+status = rust_accel.get_anonymizer_status()
+print(status)  # {'enabled': True, 'fields': N, 'pairs': M}
+
+# Get the integrity table as a nested dict
+table = rust_accel.export_integrity_table()
+
+# Or write it directly to a file (and also get the dict back)
+path = 'integrity_table.json'
+table = rust_accel.export_integrity_table(path)
+print(f"Wrote {sum(len(v) for v in table.values())} pairs to {path}")
+```
+
+The integrity table has this shape:
+- keys: field names (e.g., "src_ip", "user")
+- values: dicts mapping original values to their replacement tokens or mapped values
+
+Note: the table only contains entries for values that were actually anonymized during this run (it grows as more unique values are seen).
+
+
+## Streaming and FastAPI HTTP syslog (example)
+
+The SDK already supports streaming and batching in multiple ways:
+- Stream any iterable: rust_accel.parse_many(iterable, ...)
+- Stream a file: rust_accel.parse_file(path, ...)
+- Batch/parallel in-memory: rust_accel.parse_many_parallel(iterable, batch_size=..., rayon_threads=...)
+- End-to-end Rust NDJSON fast path: rust_accel.parse_file_to_ndjson(input_path, output_path, schema_path=None)
+
+For ingesting syslog over HTTP, an example FastAPI app is included that runs a background loop ("hop loop") to batch lines and parse them efficiently:
+
+Run the example server
+
+1. Install FastAPI and uvicorn into the same environment where logparse_rs is installed:
+   pip install fastapi uvicorn
+
+2. Set optional environment variables:
+   export SCHEMA_JSON_PATH=examples/schema/schema.json
+   export OUT_NDJSON=examples/reports/syslog_ingest.ndjson
+   export BATCH_SIZE=1024
+   export RAYON_THREADS=8
+
+3. Start the server:
+   uvicorn examples.fastapi_http_syslog:app --reload --port 8000
+
+4. Send messages:
+   - Text (one or more lines):
+     curl -X POST http://127.0.0.1:8000/syslog -H 'Content-Type: text/plain' --data-binary $'1,2025/10/12 05:07:29,TRAFFIC,...\n1,2025/10/12 05:07:31,THREAT,...'
+   - JSON: {"message": "..."} or {"messages": ["..."]}
+     curl -X POST http://127.0.0.1:8000/syslog -H 'Content-Type: application/json' -d '{"message":"1,2025/10/12 05:07:29,TRAFFIC,..."}'
+   - Stream (chunked):
+     curl -X POST http://127.0.0.1:8000/syslog/stream -H 'Content-Type: text/plain' --data-binary @examples/sample_logs/pan_inc.log
+
+Endpoints provided by the example
+- POST /syslog          : Ingests text/plain or application/json payloads; splits on newlines
+- POST /syslog/stream   : Reads a streaming/chunked body and enqueues lines as they arrive
+- GET  /healthz         : Basic health and queue stats
+- GET  /metrics         : Simple text metrics
+
+Implementation notes
+- The background task batches lines from an asyncio.Queue and, when Rust is available, uses parse_kv_enriched_batch (Rayon-backed, no GIL) for speed; otherwise it falls back to sequential parsing.
+- Enriched results are appended to OUT_NDJSON as NDJSON, mirroring parse_kv_enriched() output.
+- This example is intentionally minimal and does not include durable queues or error logging. Adapt it for production.

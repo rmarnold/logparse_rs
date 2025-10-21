@@ -26,6 +26,9 @@ echo ""
 
 # Navigate to Python bindings directory
 cd "$(dirname "$0")/bindings/python"
+# Resolve repository root and wheel directory
+REPO_ROOT="$(cd ../.. && pwd)"
+WHEEL_DIR="$REPO_ROOT/target/wheels"
 
 # Handle Conda environment if present
 if [ -n "$CONDA_PREFIX" ]; then
@@ -54,9 +57,17 @@ if command -v uv &> /dev/null; then
         uv pip install maturin
     fi
 
-    # Build with maturin
-    echo "🔨 Building extension module (release mode)..."
-    maturin develop --release
+    # Build a wheel with maturin into $WHEEL_DIR and install it (non-editable)
+    echo "🔨 Building wheel (release mode) into $WHEEL_DIR..."
+    maturin build --release
+    WHEEL=$(ls -t "$WHEEL_DIR"/logparse_rs-*.whl 2>/dev/null | head -n1)
+    if [ -z "$WHEEL" ]; then
+        echo "❌ Error: Built wheel not found in $WHEEL_DIR"
+        exit 1
+    fi
+    echo "📦 Built wheel: $WHEEL"
+    echo "✏️ Installing wheel (non-editable) into virtual environment..."
+    uv pip install "$WHEEL"
 
 else
     echo "📦 Using standard Python venv (uv not found)..."
@@ -78,9 +89,17 @@ else
         pip install maturin
     fi
 
-    # Build with maturin
-    echo "🔨 Building extension module (release mode)..."
-    maturin develop --release
+    # Build a wheel with maturin into $WHEEL_DIR and install it (non-editable)
+    echo "🔨 Building wheel (release mode) into $WHEEL_DIR..."
+    maturin build --release
+    WHEEL=$(ls -t "$WHEEL_DIR"/logparse_rs-*.whl 2>/dev/null | head -n1)
+    if [ -z "$WHEEL" ]; then
+        echo "❌ Error: Built wheel not found in $WHEEL_DIR"
+        exit 1
+    fi
+    echo "📦 Built wheel: $WHEEL"
+    echo "✏️ Installing wheel (non-editable) into virtual environment..."
+    pip install "$WHEEL"
 fi
 
 echo ""

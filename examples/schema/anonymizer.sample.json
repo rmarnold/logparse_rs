@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "defaults": {
+    "tokenize": { "prefix": "T_", "salt": "demo-salt-change-me" }
+  },
+  "fields": {
+    "src_ip": { "mode": "tokenize", "tokenize": { "prefix": "SRC_" } },
+    "dst_ip": { "mode": "tokenize", "tokenize": { "prefix": "DST_" } },
+    "source_address": { "mode": "tokenize", "tokenize": { "prefix": "SRC_" } },
+    "destination_address": { "mode": "tokenize", "tokenize": { "prefix": "DST_" } },
+    "device_name" : { "mode": "tokenize", "tokenize": { "prefix": "fw_" } },
+    "user": {
+      "mode": "map",
+      "map": {
+        "alice": "user_001",
+        "bob": "user_002"
+      },
+      "fallback": "tokenize",
+      "tokenize": { "prefix": "USR_" }
+    },
+    "rule": { "mode": "tokenize", "tokenize": { "prefix": "R_" } }
+  }
+}

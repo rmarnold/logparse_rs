@@ -14,12 +14,13 @@ impl AnonymizerCore {
         let salt = cfg.defaults.tokenize.salt.clone().unwrap_or_default().into_bytes();
         Self { cfg, table: HashMap::new(), salt }
     }
-    fn resolve_rule<'a>(&'a self, field: &str) -> (&'a Mode, Option<&'a str>, &'a super::rules::TokenizeCfg) {
+    fn resolve_rule<'a>(&'a self, field: &str) -> (Option<&'a Mode>, Option<&'a str>, &'a super::rules::TokenizeCfg) {
         let fr = self.cfg.fields.get(field);
-        let mode = fr.and_then(|r| r.mode.as_ref()).or(self.cfg.defaults.mode.as_ref()).unwrap_or(&Mode::Tokenize);
+        // Determine mode: field rule wins; else defaults.mode; else None (passthrough)
+        let mode_opt = fr.and_then(|r| r.mode.as_ref()).or(self.cfg.defaults.mode.as_ref());
         let fixed = fr.and_then(|r| r.fixed.as_deref()).or(self.cfg.defaults.fixed.as_deref());
         let tk = fr.map(|r| &r.tokenize).unwrap_or(&self.cfg.defaults.tokenize);
-        (mode, fixed, tk)
+        (mode_opt, fixed, tk)
     }
     fn tokenize_value(&self, prefix: &str, salt_override: Option<&str>, value: &str) -> String {
         // simple salted fnv-like rolling hash
@@ -33,15 +34,14 @@ impl AnonymizerCore {
         use Mode::*;
         if let Some(existing) = self.table.get(field).and_then(|m| m.get(orig)) { return Some(existing.clone()); }
         let (mode_ref, fixed_ref, tk_ref) = self.resolve_rule(field);
-        let mode = mode_ref.clone();
         let fixed_owned: Option<String> = fixed_ref.map(|s| s.to_string());
         let tk_prefix: String = tk_ref.prefix.clone().unwrap_or_else(|| "T_".to_string());
         let tk_salt_override: Option<String> = tk_ref.salt.clone();
         let fr = self.cfg.fields.get(field).cloned().unwrap_or_default();
         let field_map = fr.map; let fallback = fr.fallback;
-        let repl: String = match mode {
-            Fixed => fixed_owned.as_deref().unwrap_or("REDACTED").to_string(),
-            Map => {
+        let repl: String = match mode_ref {
+            Some(Fixed) => fixed_owned.as_deref().unwrap_or("REDACTED").to_string(),
+            Some(Map) => {
                 if let Some(r) = field_map.get(orig) { r.clone() } else {
                     match fallback {
                         Some(FallbackMode::Fixed) => fixed_owned.as_deref().unwrap_or("REDACTED").to_string(),
@@ -50,7 +50,8 @@ impl AnonymizerCore {
                     }
                 }
             }
-            Tokenize => { self.tokenize_value(&tk_prefix, tk_salt_override.as_deref(), orig) }
+            Some(Tokenize) => { self.tokenize_value(&tk_prefix, tk_salt_override.as_deref(), orig) }
+            None => { return None }
         };
         let table_for_field = self.table.entry(field.to_string()).or_default();
         table_for_field.insert(orig.to_string(), repl.clone());

@@ -1,5 +1,5 @@
 // tokenizer.rs: CSV extraction and splitting utilities
-use memchr::memchr;
+use memchr::{memchr, memchr_iter};
 
 pub fn extract_field_internal(line: &str, target_idx: usize) -> Option<String> {
     let bytes = line.as_bytes();
@@ -58,7 +58,9 @@ pub fn split_csv_internal(line: &str) -> Vec<String> {
     let bytes = line.as_bytes();
     let mut i = 0usize;
     let n = bytes.len();
-    let mut out: Vec<String> = Vec::new();
+    // Pre-reserve capacity based on comma count to reduce reallocations
+    let approx_fields = memchr_iter(b',', bytes).count() + 1;
+    let mut out: Vec<String> = Vec::with_capacity(approx_fields.max(8));
 
     while i <= n {
         if i >= n {
@@ -67,7 +69,8 @@ pub fn split_csv_internal(line: &str) -> Vec<String> {
             }
             break;
         }
-        let mut field = String::new();
+        // Small initial capacity helps for short fields and avoids many growth steps
+        let mut field = String::with_capacity(16);
         if bytes[i] == b'"' {
             i += 1;
             while i < n {

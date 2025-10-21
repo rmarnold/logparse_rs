@@ -25,46 +25,48 @@ import os
 
 # Import the generic Rust-backed SDK; fall back to pure Python if unavailable
 try:
-    from logparse_rs import (
-        extract_field as _rs_extract_field,
-        extract_type_subtype as _rs_extract_type_subtype,
-        split_csv as _rs_split_csv,
-        load_schema as _rs_load_schema,
-        parse_kv as _rs_parse_kv,
-        parse_kv_with_schema as _rs_parse_kv_with_schema,
-        get_schema_status as _rs_get_schema_status,
-        parse_kv_enriched as _rs_parse_kv_enriched,
-        parse_kv_enriched_with_schema as _rs_parse_kv_enriched_with_schema,
-        load_anonymizer as _rs_load_anonymizer,
-        set_anonymizer_json as _rs_set_anonymizer_json,
-        get_anonymizer_status as _rs_get_anonymizer_status,
-        export_integrity_table as _rs_export_integrity_table,
-        parse_kv_enriched_anon as _rs_parse_kv_enriched_anon,
-        parse_kv_enriched_with_schema_anon as _rs_parse_kv_enriched_with_schema_anon,
-        load_embedded_schema as _rs_load_embedded_schema,
-    )  # type: ignore
+    import logparse_rs as _rs  # type: ignore
     _HAS_RUST = True
 except Exception:
+    _rs = None
     _HAS_RUST = False
-    _rs_extract_field = None
-    _rs_extract_type_subtype = None
-    _rs_split_csv = None
-    _rs_load_schema = None
-    _rs_parse_kv = None
-    _rs_parse_kv_with_schema = None
-    _rs_get_schema_status = None
-    _rs_parse_kv_enriched = None
-    _rs_parse_kv_enriched_with_schema = None
-    _rs_load_anonymizer = None
-    _rs_set_anonymizer_json = None
-    _rs_get_anonymizer_status = None
-    _rs_export_integrity_table = None
-    _rs_parse_kv_enriched_anon = None
-    _rs_parse_kv_enriched_with_schema_anon = None
-    _rs_load_embedded_schema = None
+
+def _getattr(name: str):
+    return getattr(_rs, name, None) if _rs is not None else None
+
+_rs_extract_field = _getattr('extract_field')
+_rs_extract_type_subtype = _getattr('extract_type_subtype')
+_rs_split_csv = _getattr('split_csv')
+_rs_load_schema = _getattr('load_schema')
+_rs_parse_kv = _getattr('parse_kv')
+_rs_parse_kv_with_schema = _getattr('parse_kv_with_schema')
+_rs_get_schema_status = _getattr('get_schema_status')
+_rs_parse_kv_enriched = _getattr('parse_kv_enriched')
+_rs_parse_kv_enriched_with_schema = _getattr('parse_kv_enriched_with_schema')
+_rs_parse_kv_enriched_batch = _getattr('parse_kv_enriched_batch')
+_rs_parse_file_to_ndjson = _getattr('parse_file_to_ndjson')
+_rs_load_anonymizer = _getattr('load_anonymizer')
+_rs_set_anonymizer_json = _getattr('set_anonymizer_json')
+_rs_get_anonymizer_status = _getattr('get_anonymizer_status')
+_rs_export_integrity_table = _getattr('export_integrity_table')
+_rs_parse_kv_enriched_anon = _getattr('parse_kv_enriched_anon')
+_rs_parse_kv_enriched_with_schema_anon = _getattr('parse_kv_enriched_with_schema_anon')
+_rs_load_embedded_schema = _getattr('load_embedded_schema')  # may be None depending on features
 
 # Optional embedded schema loader (available only when the Rust extension was built
-# with `--features embed_schema`). Already handled by the main import above.
+# with `--features embed_schema`). Resolved dynamically above.
+
+
+def _rust_enabled() -> bool:
+    """Return True if Rust acceleration should be used for this call.
+
+    Honors the environment variable LOGPARSE_RS_DISABLE_RUST. If set to '1', 'true', or 'yes',
+    Rust acceleration is disabled even if the extension is available.
+    """
+    if not _HAS_RUST:
+        return False
+    flag = os.getenv('LOGPARSE_RS_DISABLE_RUST', '').strip().lower()
+    return flag not in ('1', 'true', 'yes')
 
 
 def load_embedded_schema() -> bool:
@@ -169,19 +171,19 @@ def _py_split_fields(line: str) -> List[str]:
 
 
 def get_field(line: str, index: int) -> Optional[str]:
-    if _HAS_RUST and _rs_extract_field is not None:
+    if _rust_enabled() and _rs_extract_field is not None:
         return _rs_extract_field(line, index)
     return _py_extract_field(line, index)
 
 
 def get_type_subtype(line: str) -> Tuple[Optional[str], Optional[str]]:
-    if _HAS_RUST and _rs_extract_type_subtype is not None:
+    if _rust_enabled() and _rs_extract_type_subtype is not None:
         return _rs_extract_type_subtype(line)
     return _py_extract_field(line, 3), _py_extract_field(line, 4)
 
 
 def get_fields(line: str) -> List[str]:
-    if _HAS_RUST and _rs_split_csv is not None:
+    if _rust_enabled() and _rs_split_csv is not None:
         return _rs_split_csv(line)
     return _py_split_fields(line)
 
@@ -236,7 +238,7 @@ def _py_load_schema(schema_path: str) -> bool:
 
 
 def load_schema(schema_path: str) -> bool:
-    if _HAS_RUST and _rs_load_schema is not None:
+    if _rust_enabled() and _rs_load_schema is not None:
         return _rs_load_schema(schema_path)
     return _py_load_schema(schema_path)
 
@@ -264,7 +266,7 @@ def parse_kv(line: str, include_all: bool = False):
     If include_all=True, also add index-based keys for every field: field_0, field_1, ...
     This preserves existing schema-mapped keys and only adds additional index keys.
     """
-    if _HAS_RUST and _rs_parse_kv is not None:
+    if _rust_enabled() and _rs_parse_kv is not None:
         base = _rs_parse_kv(line)
     else:
         base = _py_parse_kv_with_loaded_schema(line)
@@ -286,7 +288,7 @@ def parse_kv_with_schema(line: str, schema_path: str, include_all: bool = False)
 
     If include_all=True, also add index-based keys for every field: field_0, field_1, ...
     """
-    if _HAS_RUST and _rs_parse_kv_with_schema is not None:
+    if _rust_enabled() and _rs_parse_kv_with_schema is not None:
         base = _rs_parse_kv_with_schema(line, schema_path)
     else:
         need_reload = False
@@ -326,7 +328,7 @@ def parse_kv_enriched(line: str, include_all: bool = False) -> Dict:
     """Return a dict with keys: parsed (dict), raw_excerpt (str), hash64 (int).
     Uses Rust if available; otherwise Python fallback.
     """
-    if _HAS_RUST and _rs_parse_kv_enriched is not None:
+    if _rust_enabled() and _rs_parse_kv_enriched is not None:
         try:
             d = _rs_parse_kv_enriched(line)
             if include_all and isinstance(d.get('parsed'), dict):
@@ -347,7 +349,7 @@ def parse_kv_enriched(line: str, include_all: bool = False) -> Dict:
 
 
 def parse_kv_enriched_with_schema(line: str, schema_path: str, include_all: bool = False) -> Dict:
-    if _HAS_RUST and _rs_parse_kv_enriched_with_schema is not None:
+    if _rust_enabled() and _rs_parse_kv_enriched_with_schema is not None:
         try:
             d = _rs_parse_kv_enriched_with_schema(line, schema_path)
             if include_all and isinstance(d.get('parsed'), dict):
@@ -382,19 +384,39 @@ def set_anonymizer_json(config_json: str) -> bool:
 
 
 def get_anonymizer_status() -> Dict[str, object]:
-    if _HAS_RUST and _rs_get_anonymizer_status is not None:
+    if _rust_enabled() and _rs_get_anonymizer_status is not None:
         return _rs_get_anonymizer_status()  # type: ignore
     return {"enabled": False}
 
 
-def export_integrity_table() -> Dict[str, Dict[str, str]]:
-    if _HAS_RUST and _rs_export_integrity_table is not None:
-        return _rs_export_integrity_table()  # type: ignore
-    return {}
+def export_integrity_table(path: Optional[str] = None) -> Dict[str, Dict[str, str]]:
+    """Return the anonymizer integrity table and optionally write it to a JSON file.
+
+    Args:
+        path: Optional filesystem path. If provided, the table will be written
+              to this path as pretty-printed UTF-8 JSON.
+
+    Returns:
+        A nested dict: { field_name: { original_value: replacement_value } }.
+        This is always returned, even if a path is provided.
+    """
+    table: Dict[str, Dict[str, str]]
+    if _rust_enabled() and _rs_export_integrity_table is not None:
+        table = _rs_export_integrity_table()  # type: ignore
+    else:
+        table = {}
+    if path:
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(table, f, ensure_ascii=False, indent=2, sort_keys=True)
+        except Exception as e:
+            # Surface file I/O problems explicitly to caller
+            raise RuntimeError(f"Failed to write integrity table to {path}: {e}")
+    return table
 
 
 def parse_kv_enriched_anon(line: str, include_all: bool = False) -> Dict:
-    if _HAS_RUST and _rs_parse_kv_enriched_anon is not None:
+    if _rust_enabled() and _rs_parse_kv_enriched_anon is not None:
         d = _rs_parse_kv_enriched_anon(line)  # type: ignore
         if include_all and isinstance(d.get('parsed'), dict):
             fields = get_fields(line)
@@ -405,7 +427,7 @@ def parse_kv_enriched_anon(line: str, include_all: bool = False) -> Dict:
 
 
 def parse_kv_enriched_with_schema_anon(line: str, schema_path: str, include_all: bool = False) -> Dict:
-    if _HAS_RUST and _rs_parse_kv_enriched_with_schema_anon is not None:
+    if _rust_enabled() and _rs_parse_kv_enriched_with_schema_anon is not None:
         d = _rs_parse_kv_enriched_with_schema_anon(line, schema_path)  # type: ignore
         if include_all and isinstance(d.get('parsed'), dict):
             fields = get_fields(line)
@@ -428,7 +450,7 @@ def get_schema_status() -> Dict[str, object]:
     """Return runtime schema status from Rust if available, else Python fallback.
     Keys: loaded (bool), source ("embedded"|"file"|None), path (str|None), mtime_epoch_ms (int|None)
     """
-    if _HAS_RUST and _rs_get_schema_status is not None:
+    if _rust_enabled() and _rs_get_schema_status is not None:
         try:
             return _rs_get_schema_status()
         except Exception:
@@ -445,3 +467,129 @@ def get_schema_status() -> Dict[str, object]:
         "path": _PY_SCHEMA_PATH,
         "mtime_epoch_ms": mtime_ms,
     }
+
+
+# -------------- Batch helpers: process iterables or files --------------
+from typing import Iterable, Iterator
+
+def parse_many(lines: Iterable[str], *, anonymized: bool = False, include_all: bool = False, schema_path: Optional[str] = None) -> Iterator[Dict]:
+    """Parse an iterable of log lines, yielding enriched dicts per line.
+
+    Args:
+        lines: Any iterable of strings (e.g., list, generator, file object).
+        anonymized: If True, use anonymized parser (requires Rust anonymizer loaded).
+        include_all: If True, include index-based field_i keys in parsed payload.
+        schema_path: Optional schema path to use for parsing this batch.
+
+    Yields:
+        Per-line enriched parse results (same shape as parse_kv_enriched*()).
+    """
+    if anonymized:
+        if schema_path:
+            for line in lines:
+                if not line:
+                    continue
+                yield parse_kv_enriched_with_schema_anon(line.rstrip("\n"), schema_path, include_all=include_all)
+        else:
+            for line in lines:
+                if not line:
+                    continue
+                yield parse_kv_enriched_anon(line.rstrip("\n"), include_all=include_all)
+    else:
+        if schema_path:
+            for line in lines:
+                if not line:
+                    continue
+                yield parse_kv_enriched_with_schema(line.rstrip("\n"), schema_path, include_all=include_all)
+        else:
+            for line in lines:
+                if not line:
+                    continue
+                yield parse_kv_enriched(line.rstrip("\n"), include_all=include_all)
+
+
+def parse_file(path: str, *, anonymized: bool = False, include_all: bool = False, schema_path: Optional[str] = None, encoding: str = "utf-8", errors: str = "ignore") -> Iterator[Dict]:
+    """Stream-parse a file of log lines.
+
+    Args:
+        path: File path to read.
+        anonymized: If True, use anonymized parser (requires Rust anonymizer loaded).
+        include_all: If True, include index-based field_i keys in parsed payload.
+        schema_path: Optional schema path to use for parsing this file.
+        encoding: File encoding; default utf-8.
+        errors: Encoding error handling; default 'ignore'.
+
+    Yields:
+        Per-line enriched parse results.
+    """
+    with open(path, 'r', encoding=encoding, errors=errors) as f:
+        yield from parse_many(f, anonymized=anonymized, include_all=include_all, schema_path=schema_path)
+
+
+def parse_many_parallel(lines: Iterable[str], *, batch_size: int = 1024, rayon_threads: Optional[int] = None, include_all: bool = False, schema_path: Optional[str] = None) -> Iterator[Dict]:
+    """Parse an iterable of lines using the Rust batch parser with Rayon parallelism.
+
+    Notes:
+    - Only supported in Rust mode; falls back to sequential parse_many if Rust is disabled.
+    - Set rayon_threads to override the thread count (sets RAYON_NUM_THREADS for this process).
+    - include_all and schema_path are currently ignored in the batch fast path (schema must be preloaded).
+    """
+    if not _rust_enabled() or _rs_parse_kv_enriched_batch is None:
+        # Fallback to sequential
+        yield from parse_many(lines, anonymized=False, include_all=include_all, schema_path=schema_path)
+        return
+    if rayon_threads is not None:
+        os.environ["RAYON_NUM_THREADS"] = str(int(rayon_threads))
+    # Ensure schema is loaded if a path was provided
+    if schema_path:
+        load_schema(schema_path)
+    buf: List[str] = []
+    for line in lines:
+        if not line:
+            continue
+        buf.append(line.rstrip("\n"))
+        if len(buf) >= batch_size:
+            for rec in _rs_parse_kv_enriched_batch(buf):  # type: ignore
+                yield rec
+            buf = []
+    if buf:
+        for rec in _rs_parse_kv_enriched_batch(buf):  # type: ignore
+            yield rec
+
+
+def parse_file_parallel(path: str, *, batch_size: int = 1024, rayon_threads: Optional[int] = None, encoding: str = "utf-8", errors: str = "ignore", schema_path: Optional[str] = None) -> Iterator[Dict]:
+    """Read a file and parse using the parallel Rust batch parser.
+
+    Requires: Rust extension loaded and schema preloaded (or provide schema_path).
+    """
+    with open(path, 'r', encoding=encoding, errors=errors) as f:
+        yield from parse_many_parallel(f, batch_size=batch_size, rayon_threads=rayon_threads, include_all=False, schema_path=schema_path)
+
+
+def parse_file_to_ndjson(input_path: str, output_path: str, *, schema_path: Optional[str] = None, encoding: str = "utf-8", errors: str = "ignore") -> int:
+    """Parse a file and write one JSON object per line (NDJSON) to output_path.
+
+    This uses the Rust fast path when available, streaming entirely in Rust to minimize
+    Python overhead. If Rust is disabled/unavailable, it falls back to a pure-Python
+    streaming implementation using parse_file().
+
+    Returns the number of lines written.
+    """
+    # Ensure schema is loaded if provided
+    if schema_path:
+        load_schema(schema_path)
+    if _rust_enabled() and _rs_parse_file_to_ndjson is not None:
+        try:
+            return int(_rs_parse_file_to_ndjson(input_path, output_path))  # type: ignore
+        except Exception:
+            # fall through to Python fallback
+            pass
+    # Python fallback
+    import json as _json
+    count = 0
+    with open(input_path, 'r', encoding=encoding, errors=errors) as _in, open(output_path, 'w', encoding='utf-8') as _out:
+        for rec in parse_file(input_path, anonymized=False, include_all=False, schema_path=schema_path, encoding=encoding, errors=errors):
+            _json.dump(rec, _out)
+            _out.write("\n")
+            count += 1
+    return count
