@@ -1,0 +1,13 @@
+# Clippy configuration
+# Treat most lints as warnings locally; CI will fail on warnings.
+warn = [
+    "clippy::all",
+    "clippy::pedantic",
+    "clippy::nursery",
+]
+# Adjust a few noisy pedantic lints common in libraries.
+allow = [
+    "clippy::module_name_repetitions",
+    "clippy::missing_errors_doc",
+    "clippy::missing_panics_doc",
+]
