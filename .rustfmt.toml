@@ -1,4 +1,4 @@
-# Rustfmt configuration
+# Rustfmt configuration (stable-only options)
 max_width = 100
 use_small_heuristics = "Max"
 use_field_init_shorthand = true
@@ -11,7 +11,3 @@ imports_granularity = "Crate"
 normalize_doc_attributes = true
 normalize_comments = true
 format_strings = true
-
-# Keep attributes tidy
-unstable_features = true
-merge_derives = true
