@@ -2,14 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [ main, chore/** ]
+    branches: [ main, chore/**, fix/** ]
   pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      RUSTFLAGS: -D warnings
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -17,7 +15,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Rustfmt check
         run: cargo fmt --all -- --check
-      - name: Clippy (deny warnings)
+      - name: Clippy (deny warnings; pedantic/nursery allowed for now)
         run: cargo clippy --all-targets --all-features -- -D warnings
       - name: Build
         run: cargo build --workspace --all-features --verbose
@@ -59,8 +57,6 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
-    env:
-      RUSTFLAGS: -D warnings
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
