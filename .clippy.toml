@@ -1,0 +1,13 @@
+# Clippy configuration (stable)
+# CI denies warnings via -D warnings; local dev gets clear signals.
+warns = [
+    "clippy::all",
+    "clippy::pedantic",
+    "clippy::nursery",
+]
+# Tweak a few noisy pedantic lints common in libraries.
+allow = [
+    "clippy::module_name_repetitions",
+    "clippy::missing_errors_doc",
+    "clippy::missing_panics_doc",
+]

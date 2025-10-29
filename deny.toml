@@ -1,0 +1,33 @@
+# cargo-deny configuration
+# See: https://embarkstudios.github.io/cargo-deny/checks/index.html
+[advisories]
+# Fail the build on known security issues and problematic crates.
+vulnerability = "deny"
+unmaintained = "deny"
+yanked = "deny"
+unsound = "deny"
+notice = "warn"
+ignore = []
+
+[licenses]
+# SPDX identifiers of allowed licenses for dependencies. Tweak as needed.
+allow = [
+    "MIT", 
+    "Apache-2.0", 
+    "BSD-3-Clause", 
+    "BSD-2-Clause", 
+    "ISC", 
+    "Zlib", 
+    "Unicode-DFS-2016"
+]
+# Disallow unknown licenses.
+allow-osi-fsf-free = "neither"
+confidence-threshold = 0.8
+
+[bans]
+multiple-versions = "warn"
+skip = []
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
