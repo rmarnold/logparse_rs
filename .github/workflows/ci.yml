@@ -48,14 +48,11 @@ jobs:
 
   deny:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - name: Install cargo-deny
-        uses: EmbarkStudios/cargo-deny-action@v2
       - name: Run cargo-deny
-        run: cargo deny check
+        uses: EmbarkStudios/cargo-deny-action@v2
 
   coverage:
     runs-on: ubuntu-latest
