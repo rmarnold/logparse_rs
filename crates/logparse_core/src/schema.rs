@@ -31,16 +31,25 @@ pub struct LogTypeDef {
 
 #[derive(Deserialize)]
 #[serde(untagged)]
-pub enum FieldDef { Str(String), Obj { name: String } }
+pub enum FieldDef {
+    Str(String),
+    Obj { name: String },
+}
 
 pub(crate) fn sanitize_identifier(name: &str) -> String {
     let mut s = name.trim().to_lowercase();
     s = s.replace(' ', "_").replace('/', "_").replace('-', "_");
     let mut out = String::with_capacity(s.len());
     for ch in s.chars() {
-        if ch.is_ascii_alphanumeric() || ch == '_' { out.push(ch); } else { out.push('_'); }
+        if ch.is_ascii_alphanumeric() || ch == '_' {
+            out.push(ch);
+        } else {
+            out.push('_');
+        }
     }
-    if out.is_empty() || !(out.chars().next().unwrap().is_ascii_alphabetic() || out.starts_with('_')) {
+    if out.is_empty()
+        || !(out.chars().next().unwrap().is_ascii_alphabetic() || out.starts_with('_'))
+    {
         out.insert(0, '_');
     }
     out
@@ -59,7 +68,10 @@ fn build_type_to_fields(root: SchemaRoot) -> HashMap<String, Vec<String>> {
     for (_name, def) in root.palo_alto_syslog_fields.log_types.into_iter() {
         let mut fields: Vec<String> = Vec::new();
         for f in def.fields.into_iter() {
-            let raw = match f { FieldDef::Str(s) => s, FieldDef::Obj { name } => name };
+            let raw = match f {
+                FieldDef::Str(s) => s,
+                FieldDef::Obj { name } => name,
+            };
             let key = sanitize_identifier(&raw);
             fields.push(key);
         }
@@ -68,11 +80,15 @@ fn build_type_to_fields(root: SchemaRoot) -> HashMap<String, Vec<String>> {
     map
 }
 
-fn read_mtime(path: &Path) -> Option<SystemTime> { fs::metadata(path).ok().and_then(|m| m.modified().ok()) }
+fn read_mtime(path: &Path) -> Option<SystemTime> {
+    fs::metadata(path).ok().and_then(|m| m.modified().ok())
+}
 
 pub fn load_schema_internal(schema_path: &str) -> Result<LoadedSchema, String> {
-    let data = fs::read_to_string(schema_path).map_err(|e| format!("Failed to read schema {}: {}", schema_path, e))?;
-    let root: SchemaRoot = serde_json::from_str(&data).map_err(|e| format!("Failed to parse schema JSON: {}", e))?;
+    let data = fs::read_to_string(schema_path)
+        .map_err(|e| format!("Failed to read schema {}: {}", schema_path, e))?;
+    let root: SchemaRoot =
+        serde_json::from_str(&data).map_err(|e| format!("Failed to parse schema JSON: {}", e))?;
     let type_to_fields = build_type_to_fields(root);
     let mtime = read_mtime(Path::new(schema_path));
     Ok(LoadedSchema { path: schema_path.to_string(), mtime, type_to_fields })
@@ -83,7 +99,9 @@ pub fn ensure_schema_loaded(schema_path: &str) -> Result<(), String> {
     let need_reload = match guard.as_ref() {
         None => true,
         Some(ls) => {
-            if ls.path != schema_path { true } else {
+            if ls.path != schema_path {
+                true
+            } else {
                 let current = read_mtime(Path::new(schema_path));
                 current != ls.mtime
             }

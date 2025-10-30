@@ -1,8 +1,8 @@
 // PyO3 bindings for logparse_core
+use once_cell::sync::Lazy;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyModule};
-use once_cell::sync::Lazy;
 use std::sync::RwLock;
 use std::time::Instant;
 
@@ -14,7 +14,11 @@ use core::{LoadedSchema, SCHEMA_CACHE};
 // Parallel iterators for batch parsing
 use rayon::prelude::*;
 
-fn parse_line_to_dict<'py>(py: Python<'py>, line: &str, schema: &LoadedSchema) -> PyResult<Bound<'py, PyDict>> {
+fn parse_line_to_dict<'py>(
+    py: Python<'py>,
+    line: &str,
+    schema: &LoadedSchema,
+) -> PyResult<Bound<'py, PyDict>> {
     // Fast path: avoid building an intermediate HashMap. Instead, split the CSV
     // once and populate the Python dict directly using the schema's field names.
     // This eliminates per-line hashing and key String cloning.
@@ -44,7 +48,11 @@ fn parse_line_to_dict<'py>(py: Python<'py>, line: &str, schema: &LoadedSchema) -
 #[pyo3(text_signature = "(schema_path)")]
 fn load_schema(schema_path: &str) -> PyResult<bool> {
     match core::load_schema_internal(schema_path) {
-        Ok(loaded) => { let mut guard = SCHEMA_CACHE.write().unwrap(); *guard = Some(loaded); Ok(true) }
+        Ok(loaded) => {
+            let mut guard = SCHEMA_CACHE.write().unwrap();
+            *guard = Some(loaded);
+            Ok(true)
+        }
         Err(e) => Err(PyValueError::new_err(e)),
     }
 }
@@ -55,7 +63,9 @@ fn load_schema(schema_path: &str) -> PyResult<bool> {
 #[pyo3(text_signature = "(line)")]
 fn parse_kv(py: Python, line: &str) -> PyResult<Py<PyDict>> {
     let guard = SCHEMA_CACHE.read().unwrap();
-    let schema = guard.as_ref().ok_or_else(|| PyValueError::new_err("No schema loaded. Call load_schema() or use parse_kv_with_schema()."))?;
+    let schema = guard.as_ref().ok_or_else(|| {
+        PyValueError::new_err("No schema loaded. Call load_schema() or use parse_kv_with_schema().")
+    })?;
     let dict = parse_line_to_dict(py, line, schema)?;
     Ok(dict.unbind())
 }
@@ -85,14 +95,24 @@ fn get_schema_status(py: Python) -> PyResult<Py<PyDict>> {
             d.set_item("source", "file")?;
             if let Some(mt) = ls.mtime {
                 match mt.duration_since(SystemTime::UNIX_EPOCH) {
-                    Ok(dur) => { let ms: i64 = (dur.as_secs() as i64) * 1000 + (dur.subsec_millis() as i64); d.set_item("mtime_epoch_ms", ms)?; }
-                    Err(_) => { d.set_item("mtime_epoch_ms", py.None())?; }
+                    Ok(dur) => {
+                        let ms: i64 = (dur.as_secs() as i64) * 1000 + (dur.subsec_millis() as i64);
+                        d.set_item("mtime_epoch_ms", ms)?;
+                    }
+                    Err(_) => {
+                        d.set_item("mtime_epoch_ms", py.None())?;
+                    }
                 }
             } else {
                 d.set_item("mtime_epoch_ms", py.None())?;
             }
         }
-        None => { d.set_item("loaded", false)?; d.set_item("path", py.None())?; d.set_item("source", py.None())?; d.set_item("mtime_epoch_ms", py.None())?; }
+        None => {
+            d.set_item("loaded", false)?;
+            d.set_item("path", py.None())?;
+            d.set_item("source", py.None())?;
+            d.set_item("mtime_epoch_ms", py.None())?;
+        }
     }
     Ok(d.unbind())
 }
@@ -100,7 +120,9 @@ fn get_schema_status(py: Python) -> PyResult<Py<PyDict>> {
 /// Extract the raw CSV field at the given 0-based index. Returns the field string or None if out of bounds.
 #[pyfunction]
 #[pyo3(text_signature = "(line, index)")]
-fn extract_field(line: &str, index: usize) -> PyResult<Option<String>> { Ok(core::extract_field_internal(line, index)) }
+fn extract_field(line: &str, index: usize) -> PyResult<Option<String>> {
+    Ok(core::extract_field_internal(line, index))
+}
 
 /// Extract the event type and subtype fields (indexes 3 and 4) from the CSV line.
 #[pyfunction]
@@ -114,14 +136,20 @@ fn extract_type_subtype(line: &str) -> PyResult<(Option<String>, Option<String>)
 /// Split a CSV line (quote-aware) into a list of fields.
 #[pyfunction]
 #[pyo3(text_signature = "(line)")]
-fn split_csv(line: &str) -> PyResult<Vec<String>> { Ok(core::split_csv_internal(line)) }
+fn split_csv(line: &str) -> PyResult<Vec<String>> {
+    Ok(core::split_csv_internal(line))
+}
 
 /// Parse a line and return an enriched result with parsed fields, raw excerpt, hash64, and runtime.
 #[pyfunction]
 #[pyo3(text_signature = "(line)")]
 fn parse_kv_enriched(py: Python, line: &str) -> PyResult<Py<PyDict>> {
     let guard = SCHEMA_CACHE.read().unwrap();
-    let schema = guard.as_ref().ok_or_else(|| PyValueError::new_err("No schema loaded. Call load_schema() or use parse_kv_enriched_with_schema()."))?;
+    let schema = guard.as_ref().ok_or_else(|| {
+        PyValueError::new_err(
+            "No schema loaded. Call load_schema() or use parse_kv_enriched_with_schema().",
+        )
+    })?;
     let t0 = Instant::now();
     let parsed = parse_line_to_dict(py, line, schema)?;
     let runtime_ns = t0.elapsed().as_nanos() as u128;
@@ -138,7 +166,11 @@ fn parse_kv_enriched(py: Python, line: &str) -> PyResult<Py<PyDict>> {
 /// Parse using the schema at the given path and return an enriched result.
 #[pyfunction]
 #[pyo3(text_signature = "(line, schema_path)")]
-fn parse_kv_enriched_with_schema(py: Python, line: &str, schema_path: &str) -> PyResult<Py<PyDict>> {
+fn parse_kv_enriched_with_schema(
+    py: Python,
+    line: &str,
+    schema_path: &str,
+) -> PyResult<Py<PyDict>> {
     core::ensure_schema_loaded(schema_path).map_err(PyValueError::new_err)?;
     let guard = SCHEMA_CACHE.read().unwrap();
     let schema = guard.as_ref().unwrap();
@@ -162,7 +194,9 @@ fn parse_kv_enriched_with_schema(py: Python, line: &str, schema_path: &str) -> P
 #[pyo3(text_signature = "(lines)")]
 fn parse_kv_enriched_batch(py: Python, lines: Vec<String>) -> PyResult<Vec<Py<PyDict>>> {
     let guard = SCHEMA_CACHE.read().unwrap();
-    let schema = guard.as_ref().ok_or_else(|| PyValueError::new_err("No schema loaded. Call load_schema()"))?;
+    let schema = guard
+        .as_ref()
+        .ok_or_else(|| PyValueError::new_err("No schema loaded. Call load_schema()"))?;
 
     // Perform the heavy parsing in parallel without holding the GIL
     // Avoid cloning schema key names per record by carrying only the log type and
@@ -178,22 +212,29 @@ fn parse_kv_enriched_batch(py: Python, lines: Vec<String>) -> PyResult<Vec<Py<Py
 
     // Perform heavy compute without interacting with Python; no need to hold the GIL here.
     let mids: Vec<Result<Mid, String>> = {
-        lines.par_iter().map(|line| {
-            let t0 = Instant::now();
-            let t = core::extract_field_internal(line, 3).ok_or_else(|| "Could not extract log type at index 3".to_string())?;
-            // Validate type exists early to surface errors promptly
-            let _ = schema.type_to_fields.get(&t).ok_or_else(|| format!("Unknown log type in schema: {}", t))?;
-            let fields = core::split_csv_internal(line);
-            let runtime_ns = t0.elapsed().as_nanos() as u128;
-            let excerpt_len = std::cmp::min(256, line.len());
-            Ok(Mid {
-                t,
-                fields,
-                hash64: core::hash64_fnv1a(line.as_bytes()),
-                excerpt: line[..excerpt_len].to_string(),
-                runtime_ns,
+        lines
+            .par_iter()
+            .map(|line| {
+                let t0 = Instant::now();
+                let t = core::extract_field_internal(line, 3)
+                    .ok_or_else(|| "Could not extract log type at index 3".to_string())?;
+                // Validate type exists early to surface errors promptly
+                let _ = schema
+                    .type_to_fields
+                    .get(&t)
+                    .ok_or_else(|| format!("Unknown log type in schema: {}", t))?;
+                let fields = core::split_csv_internal(line);
+                let runtime_ns = t0.elapsed().as_nanos() as u128;
+                let excerpt_len = std::cmp::min(256, line.len());
+                Ok(Mid {
+                    t,
+                    fields,
+                    hash64: core::hash64_fnv1a(line.as_bytes()),
+                    excerpt: line[..excerpt_len].to_string(),
+                    runtime_ns,
+                })
             })
-        }).collect()
+            .collect()
     };
 
     // If any error occurred, return the first one as a Python ValueError
@@ -211,7 +252,9 @@ fn parse_kv_enriched_batch(py: Python, lines: Vec<String>) -> PyResult<Vec<Py<Py
         // Lookup field names by type without cloning them
         let names = match schema.type_to_fields.get(&r.t) {
             Some(n) => n,
-            None => return Err(PyValueError::new_err(format!("Unknown log type in schema: {}", r.t))),
+            None => {
+                return Err(PyValueError::new_err(format!("Unknown log type in schema: {}", r.t)))
+            }
         };
         for (i, name) in names.iter().enumerate() {
             let key = pyo3::types::PyString::intern(py, name);
@@ -238,7 +281,8 @@ static ANONYMIZER: Lazy<RwLock<Option<core::AnonymizerCore>>> = Lazy::new(|| RwL
 #[pyfunction]
 #[pyo3(text_signature = "(config_path)")]
 fn load_anonymizer(config_path: &str) -> PyResult<bool> {
-    let json = std::fs::read_to_string(config_path).map_err(|e| PyValueError::new_err(e.to_string()))?;
+    let json =
+        std::fs::read_to_string(config_path).map_err(|e| PyValueError::new_err(e.to_string()))?;
     let anon = core::anonymizer_from_json(&json).map_err(PyValueError::new_err)?;
     let mut g = ANONYMIZER.write().unwrap();
     *g = Some(anon);
@@ -281,7 +325,9 @@ fn export_integrity_table(py: Python) -> PyResult<Py<PyDict>> {
     if let Some(a) = g.as_ref() {
         for (field, map) in &a.table {
             let sub = PyDict::new(py);
-            for (orig, repl) in map { sub.set_item(orig, repl)?; }
+            for (orig, repl) in map {
+                sub.set_item(orig, repl)?;
+            }
             d.set_item(field, sub)?;
         }
     }
@@ -313,7 +359,9 @@ fn parse_kv_enriched_anon(py: Python, line: &str) -> PyResult<Py<PyDict>> {
                 out.set_item(k, v)?;
             }
             out
-        } else { parsed0 }
+        } else {
+            parsed0
+        }
     };
     let anonymize_ns = t_anon.elapsed().as_nanos() as u128;
     let total_ns = parse_ns + anonymize_ns;
@@ -332,7 +380,11 @@ fn parse_kv_enriched_anon(py: Python, line: &str) -> PyResult<Py<PyDict>> {
 /// Parse a line using the given schema path and return enriched results with anonymization when enabled.
 #[pyfunction]
 #[pyo3(text_signature = "(line, schema_path)")]
-fn parse_kv_enriched_with_schema_anon(py: Python, line: &str, schema_path: &str) -> PyResult<Py<PyDict>> {
+fn parse_kv_enriched_with_schema_anon(
+    py: Python,
+    line: &str,
+    schema_path: &str,
+) -> PyResult<Py<PyDict>> {
     core::ensure_schema_loaded(schema_path).map_err(PyValueError::new_err)?;
     parse_kv_enriched_anon(py, line)
 }
@@ -343,17 +395,23 @@ fn parse_file_to_ndjson(input_path: &str, output_path: &str) -> PyResult<usize> 
     use std::io::{BufRead, BufReader, BufWriter, Write};
     // Ensure schema is loaded
     let guard = SCHEMA_CACHE.read().unwrap();
-    let schema = guard.as_ref().ok_or_else(|| PyValueError::new_err("No schema loaded. Call load_schema() first."))?;
+    let schema = guard
+        .as_ref()
+        .ok_or_else(|| PyValueError::new_err("No schema loaded. Call load_schema() first."))?;
 
-    let infile = std::fs::File::open(input_path).map_err(|e| PyValueError::new_err(e.to_string()))?;
-    let mut outfile = std::fs::File::create(output_path).map_err(|e| PyValueError::new_err(e.to_string()))?;
+    let infile =
+        std::fs::File::open(input_path).map_err(|e| PyValueError::new_err(e.to_string()))?;
+    let mut outfile =
+        std::fs::File::create(output_path).map_err(|e| PyValueError::new_err(e.to_string()))?;
     let reader = BufReader::new(infile);
     let mut writer = BufWriter::new(&mut outfile);
 
     let mut count: usize = 0;
     for line_res in reader.lines() {
         let line = line_res.map_err(|e| PyValueError::new_err(e.to_string()))?;
-        if line.is_empty() { continue; }
+        if line.is_empty() {
+            continue;
+        }
         let t0 = Instant::now();
         let t = match core::extract_field_internal(&line, 3) {
             Some(s) => s,
@@ -379,12 +437,24 @@ fn parse_file_to_ndjson(input_path: &str, output_path: &str) -> PyResult<usize> 
         let max_len = std::cmp::min(256, line.len());
         let mut root = serde_json::Map::with_capacity(4);
         root.insert("parsed".to_string(), serde_json::Value::Object(parsed));
-        root.insert("raw_excerpt".to_string(), serde_json::Value::String(line[..max_len].to_string()));
-        root.insert("hash64".to_string(), serde_json::Value::Number(serde_json::Number::from(core::hash64_fnv1a(line.as_bytes()) as u64)));
-        root.insert("runtime_ns".to_string(), serde_json::Value::Number(serde_json::Number::from(runtime_ns as u64)));
+        root.insert(
+            "raw_excerpt".to_string(),
+            serde_json::Value::String(line[..max_len].to_string()),
+        );
+        root.insert(
+            "hash64".to_string(),
+            serde_json::Value::Number(serde_json::Number::from(
+                core::hash64_fnv1a(line.as_bytes()) as u64,
+            )),
+        );
+        root.insert(
+            "runtime_ns".to_string(),
+            serde_json::Value::Number(serde_json::Number::from(runtime_ns as u64)),
+        );
 
         let value = serde_json::Value::Object(root);
-        serde_json::to_writer(&mut writer, &value).map_err(|e| PyValueError::new_err(e.to_string()))?;
+        serde_json::to_writer(&mut writer, &value)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
         writer.write_all(b"\n").map_err(|e| PyValueError::new_err(e.to_string()))?;
         count += 1;
     }
@@ -395,7 +465,9 @@ fn parse_file_to_ndjson(input_path: &str, output_path: &str) -> PyResult<usize> 
 #[pymodule]
 #[pyo3(module = "logparse_rs")]
 fn logparse_rs(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
-    m.add("__doc__", "High-performance log parsing and anonymization library.\n\n\
+    m.add(
+        "__doc__",
+        "High-performance log parsing and anonymization library.\n\n\
         Features:\n\
         - Schema-driven CSV/KV parsing\n\
         - Optional field anonymization with deterministic tokens\n\
@@ -404,7 +476,8 @@ fn logparse_rs(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
         >>> import logparse_rs as lp\n\
         >>> lp.load_schema('path/to/schema.json')\n\
         >>> result = lp.parse_kv_enriched('1,2025/10/12 05:07:29,...')\n\
-        >>> print(result['parsed'])")?;
+        >>> print(result['parsed'])",
+    )?;
 
     // Schema-driven parsing APIs
     m.add_function(wrap_pyfunction!(load_schema, m)?)?;
@@ -441,7 +514,9 @@ fn logparse_rs(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     }
 
     // Optional: preload anonymizer from env var (generic + legacy)
-    if let Ok(anon_path) = std::env::var("LOGPARSE_ANON_CONFIG").or_else(|_| std::env::var("PAN_RUST_ANON_CONFIG")) {
+    if let Ok(anon_path) =
+        std::env::var("LOGPARSE_ANON_CONFIG").or_else(|_| std::env::var("PAN_RUST_ANON_CONFIG"))
+    {
         if let Ok(json) = std::fs::read_to_string(&anon_path) {
             if let Ok(anon) = core::anonymizer_from_json(&json) {
                 let mut g = ANONYMIZER.write().unwrap();

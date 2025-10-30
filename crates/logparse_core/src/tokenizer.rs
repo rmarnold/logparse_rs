@@ -9,7 +9,11 @@ pub fn extract_field_internal(line: &str, target_idx: usize) -> Option<String> {
 
     while idx <= target_idx && i <= n {
         if i >= n {
-            if idx == target_idx { return Some(String::new()); } else { return None; }
+            if idx == target_idx {
+                return Some(String::new());
+            } else {
+                return None;
+            }
         }
         let mut field = String::new();
         if bytes[i] == b'"' {
@@ -30,7 +34,9 @@ pub fn extract_field_internal(line: &str, target_idx: usize) -> Option<String> {
                     i += 1;
                 }
             }
-            while i < n && bytes[i] != b',' { i += 1; }
+            while i < n && bytes[i] != b',' {
+                i += 1;
+            }
         } else {
             if let Some(pos) = memchr(b',', &bytes[i..]) {
                 let end = i + pos;
@@ -47,8 +53,12 @@ pub fn extract_field_internal(line: &str, target_idx: usize) -> Option<String> {
                 i = n;
             }
         }
-        if i < n && bytes[i] == b',' { i += 1; }
-        if idx == target_idx { return Some(field); }
+        if i < n && bytes[i] == b',' {
+            i += 1;
+        }
+        if idx == target_idx {
+            return Some(field);
+        }
         idx += 1;
     }
     None
@@ -88,7 +98,9 @@ pub fn split_csv_internal(line: &str) -> Vec<String> {
                     i += 1;
                 }
             }
-            while i < n && bytes[i] != b',' { i += 1; }
+            while i < n && bytes[i] != b',' {
+                i += 1;
+            }
         } else {
             if let Some(pos) = memchr(b',', &bytes[i..]) {
                 let end = i + pos;
@@ -105,7 +117,9 @@ pub fn split_csv_internal(line: &str) -> Vec<String> {
                 i = n;
             }
         }
-        if i < n && bytes[i] == b',' { i += 1; }
+        if i < n && bytes[i] == b',' {
+            i += 1;
+        }
         out.push(field);
     }
 
@@ -114,16 +128,16 @@ pub fn split_csv_internal(line: &str) -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{split_csv_internal, extract_field_internal};
+    use super::{extract_field_internal, split_csv_internal};
 
     #[test]
     fn test_split_csv_internal_basic_and_quotes() {
         // Basic
-        assert_eq!(split_csv_internal("a,b,c"), vec!["a","b","c"]);
+        assert_eq!(split_csv_internal("a,b,c"), vec!["a", "b", "c"]);
         // Quoted with comma and escaped quotes
-        assert_eq!(split_csv_internal("\"a,b\",\"c\"\"d\"\"e\",f"), vec!["a,b","c\"d\"e","f"]);
+        assert_eq!(split_csv_internal("\"a,b\",\"c\"\"d\"\"e\",f"), vec!["a,b", "c\"d\"e", "f"]);
         // Trailing empty field
-        assert_eq!(split_csv_internal("a,b,"), vec!["a","b",""]);
+        assert_eq!(split_csv_internal("a,b,"), vec!["a", "b", ""]);
         // Empty string
         let v: Vec<String> = split_csv_internal("");
         assert_eq!(v.len(), 0);
@@ -150,7 +164,13 @@ mod tests {
             // Edge: idx == len
             let edge = extract_field_internal(line, split.len());
             let expected_edge = if line.ends_with(',') { None } else { Some(String::new()) };
-            assert_eq!(edge, expected_edge, "edge mismatch at len={} for line={}", split.len(), line);
+            assert_eq!(
+                edge,
+                expected_edge,
+                "edge mismatch at len={} for line={}",
+                split.len(),
+                line
+            );
             // Out of range beyond len
             assert_eq!(extract_field_internal(line, split.len() + 1), None);
         }

@@ -3,15 +3,26 @@ use serde::Deserialize;
 use std::collections::HashMap;
 
 #[derive(Deserialize, Clone, Default)]
-pub struct TokenizeCfg { pub prefix: Option<String>, pub salt: Option<String> }
+pub struct TokenizeCfg {
+    pub prefix: Option<String>,
+    pub salt: Option<String>,
+}
 
 #[derive(Deserialize, Clone)]
 #[serde(rename_all = "lowercase")]
-pub enum FallbackMode { Tokenize, Fixed, Reject }
+pub enum FallbackMode {
+    Tokenize,
+    Fixed,
+    Reject,
+}
 
 #[derive(Deserialize, Clone)]
 #[serde(rename_all = "lowercase")]
-pub enum Mode { Fixed, Map, Tokenize }
+pub enum Mode {
+    Fixed,
+    Map,
+    Tokenize,
+}
 
 #[derive(Deserialize, Clone, Default)]
 pub struct FieldRule {
