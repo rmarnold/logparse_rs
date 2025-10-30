@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Any, Dict, Optional, Tuple, List
+from . import rust_accel as rust_accel
 
 # Public functions exposed by the native extension
 
@@ -52,6 +53,3 @@ def export_integrity_table() -> Dict[str, Dict[str, str]]: ...
 def parse_kv_enriched_anon(line: str) -> Dict[str, Any]: ...
 
 def parse_kv_enriched_with_schema_anon(line: str, schema_path: str) -> Dict[str, Any]: ...
-
-# Re-exported helper submodule (if present)
-from . import rust_accel as rust_accel
