@@ -7,16 +7,14 @@ ignore = []
 [licenses]
 # SPDX identifiers of allowed licenses for dependencies. Tweak as needed.
 allow = [
-    "MIT", 
-    "Apache-2.0", 
-    "BSD-3-Clause", 
-    "BSD-2-Clause", 
-    "ISC", 
-    "Zlib", 
+    "MIT",
+    "Apache-2.0",
+    "BSD-3-Clause",
+    "BSD-2-Clause",
+    "ISC",
+    "Zlib",
     "Unicode-DFS-2016"
 ]
-# Disallow unknown licenses.
-allow-osi-fsf-free = "neither"
 confidence-threshold = 0.8
 
 [bans]
