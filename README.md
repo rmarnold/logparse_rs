@@ -2,10 +2,11 @@
 
 High-performance, schema-driven log parsing and optional anonymization — Rust core with first-class Python bindings.
 
-[![CI](https://img.shields.io/badge/CI-GitHub_Actions-blue?logo=github)](./.github/workflows)
+[![CI](https://github.com/rmarnold/logparse_rs/actions/workflows/ci.yml/badge.svg)](https://github.com/rmarnold/logparse_rs/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/rmarnold/logparse_rs/branch/main/graph/badge.svg)](https://codecov.io/gh/rmarnold/logparse_rs)
 [![Crates.io](https://img.shields.io/crates/v/logparse_core.svg)](https://crates.io/crates/logparse_core)
 [![PyPI](https://img.shields.io/pypi/v/logparse-rs.svg)](https://pypi.org/project/logparse-rs/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+[![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](./LICENSE)
 
 This repository is a small monorepo:
 - crates/logparse_core — pure Rust engine for CSV tokenization, schema-driven KV parsing, hashing, and anonymization primitives.
