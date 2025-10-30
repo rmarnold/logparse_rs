@@ -14,6 +14,7 @@ allow = [
     "BSD-2-Clause",
     "ISC",
     "Zlib",
+    "Unicode-3.0",
     "Unicode-DFS-2016"
 ]
 confidence-threshold = 0.8
