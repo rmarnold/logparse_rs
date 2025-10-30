@@ -19,7 +19,7 @@ Functions:
 """
 from __future__ import annotations
 
-from typing import Optional, Tuple, List, Dict
+from typing import Optional, Tuple, List, Dict, Iterable, Iterator
 import json
 import os
 
@@ -141,7 +141,6 @@ def _py_split_fields(line: str) -> List[str]:
                 fields.append("")
             break
         # Extract next field by scanning similar to _py_extract_field
-        start = i
         if line[i] == '"':
             i += 1
             field_chars = []
@@ -470,7 +469,6 @@ def get_schema_status() -> Dict[str, object]:
 
 
 # -------------- Batch helpers: process iterables or files --------------
-from typing import Iterable, Iterator
 
 def parse_many(lines: Iterable[str], *, anonymized: bool = False, include_all: bool = False, schema_path: Optional[str] = None) -> Iterator[Dict]:
     """Parse an iterable of log lines, yielding enriched dicts per line.
