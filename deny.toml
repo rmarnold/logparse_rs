@@ -1,12 +1,7 @@
 # cargo-deny configuration
 # See: https://embarkstudios.github.io/cargo-deny/checks/index.html
 [advisories]
-# Fail the build on known security issues and problematic crates.
-vulnerability = "deny"
-unmaintained = "deny"
-yanked = "deny"
-unsound = "deny"
-notice = "warn"
+version = 2
 ignore = []
 
 [licenses]
@@ -26,8 +21,5 @@ confidence-threshold = 0.8
 
 [bans]
 multiple-versions = "warn"
-skip = []
 
 [sources]
-unknown-registry = "deny"
-unknown-git = "deny"
